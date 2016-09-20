@@ -4670,7 +4670,11 @@ require("./modules/setting/");
 
 require("./modules/signin/");
 
-},{"./modules/(main-app)/":4,"./modules/cart/":10,"./modules/community/":13,"./modules/downtown/":16,"./modules/help/":19,"./modules/home/":22,"./modules/modules":23,"./modules/search/":24,"./modules/setting/":27,"./modules/signin/":30,"./modules/templates/templates.module":33,"angular-ui-router":2,"angular-ui-router-styles/ui-router-styles":1}],4:[function(require,module,exports){
+require("./modules/auth/");
+
+require("./modules/[directives]/");
+
+},{"./modules/(main-app)/":4,"./modules/[directives]/":8,"./modules/auth/":14,"./modules/cart/":17,"./modules/community/":20,"./modules/downtown/":23,"./modules/help/":26,"./modules/home/":29,"./modules/modules":30,"./modules/search/":31,"./modules/setting/":34,"./modules/signin/":37,"./modules/templates/templates.module":40,"angular-ui-router":2,"angular-ui-router-styles/ui-router-styles":1}],4:[function(require,module,exports){
 "use strict";
 
 var _mainApp = require("./main-app.constant");
@@ -4728,23 +4732,16 @@ var MainAppConstant = exports.MainAppConstant = {
 },{}],7:[function(require,module,exports){
 "use strict";
 
-MainAppRun.$inject = ["MainAppConstant", "PermPermissionStore", "PermRoleStore", "$rootScope", "$state", "AuthService"];
+MainAppRun.$inject = ["MainAppConstant", "$rootScope", "$state", "AuthService"];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.MainAppRun = MainAppRun;
-function MainAppRun(MainAppConstant, PermPermissionStore, PermRoleStore, $rootScope, $state, AuthService) {
+function MainAppRun(MainAppConstant, $rootScope, $state, AuthService) {
     "ngInject";
 
-    PermPermissionStore.definePermission("listUsers", function () {
-        return true;
-    });
-
-    PermRoleStore.defineRole("USER", function () {
-        return true;
-    });
-
     // change page title based on state
+
     $rootScope.$on('$stateChangeSuccess', function (event, next, toState) {
         $rootScope.setPageTitle(toState.title);
 
@@ -4771,6 +4768,328 @@ function MainAppRun(MainAppConstant, PermPermissionStore, PermRoleStore, $rootSc
 },{}],8:[function(require,module,exports){
 "use strict";
 
+var _permissions = require("./permissions/permissions");
+
+/**
+ * @ngdoc directive
+ * @name Directives.directive:permissions
+ *
+ * @description
+ * Restricting access to page content
+ */
+angular.module("Directives").directive("permissions", ["AuthService", _permissions.permissions]);
+
+},{"./permissions/permissions":9}],9:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.permissions = permissions;
+function permissions(AuthService) {
+    return {
+        restrict: 'A',
+        scope: {
+            permissions: '='
+        },
+
+        link: function link(scope, elem, attrs) {
+            if (AuthService.userHasPermission(scope.permissions)) {
+                elem.removeClass("ng-hide");
+            } else {
+                elem.addClass("ng-hide");
+            }
+        }
+    };
+};
+
+},{}],10:[function(require,module,exports){
+"use strict";
+
+AuthConfig.$inject = ["$stateProvider", "$httpProvider"];
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.AuthConfig = AuthConfig;
+function AuthConfig($stateProvider, $httpProvider) {
+    "ngInject";
+
+    $httpProvider.interceptors.push("authInterceptor");
+
+    $stateProvider.state("auth", {
+        templateUrl: "modules/auth/auth.html",
+        controller: "AuthController",
+        controllerAs: "auth",
+        title: "Authentication",
+        data: {
+            authenticate: false
+        }
+    }).state("forbidden", {
+        templateUrl: "modules/auth/forbidden.html",
+        data: {
+            authenticate: true
+        }
+    });
+};
+
+},{}],11:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @ngdoc controller
+ * @name Auth.controller:AuthController
+ * @description Controller for Auth module.
+ */
+var AuthController = exports.AuthController = function () {
+    AuthController.$inject = ["$http", "$window", "AuthService"];
+    function AuthController($http, $window, AuthService) {
+        "ngInject";
+
+        _classCallCheck(this, AuthController);
+
+        this._$http = $http;
+        this._$window = $window;
+        this._AuthService = AuthService;
+
+        this.user = {
+            username: 'praewrung',
+            password: 'prawrung'
+        };
+        this.isAuthenticated = false;
+        this.welcome = '';
+        this.message = '';
+    }
+
+    _createClass(AuthController, [{
+        key: 'submit',
+        value: function submit() {
+            var _this = this;
+
+            this._AuthService.signin(this.user.username, this.user.password).then(function () {
+                _this.isAuthenticated = true;
+
+                var profile = _this._AuthService.profile;
+                _this.welcome = 'Welcome ' + profile.first_name + ' ' + profile.last_name;
+            }, function (data) {
+                // Erase the token if the user fails to log in
+                _this.isAuthenticated = false;
+
+                // Handle login errors here
+                _this.error = 'Error: ' + data;
+                _this.welcome = '';
+            });
+        }
+    }, {
+        key: 'logout',
+        value: function logout() {
+            this._AuthService.signout();
+
+            this.welcome = '';
+            this.message = '';
+            this.isAuthenticated = false;
+        }
+    }, {
+        key: 'callRestricted',
+        value: function callRestricted() {
+            var _this2 = this;
+
+            this._$http({
+                url: 'http://localhost:8000/protected/restricted',
+                method: 'GET'
+            }).success(function (data, status, headers, config) {
+                _this2.message = _this2.message + ' ' + data.name; // Should log 'foo'
+            }).error(function (data, status, headers, config) {
+                alert(status + ": " + data);
+            });
+        }
+    }]);
+
+    return AuthController;
+}();
+
+},{}],12:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.authInterceptor = authInterceptor;
+function authInterceptor($rootScope, $q, $window) {
+    return {
+        request: function request(config) {
+            config.headers = config.headers || {};
+            if ($window.localStorage.token) {
+                config.headers.Authorization = "Bearer " + $window.localStorage.token;
+            }
+            return config;
+        },
+        responseError: function responseError(rejection) {
+            if (rejection.status === 401) {
+                // handle the case where the user is not authenticated
+            }
+            return $q.reject(rejection);
+        }
+    };
+};
+
+},{}],13:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @ngdoc service
+ * @name Auth.service:AuthService
+ * @description Service for Auth module.
+ */
+var AuthService = exports.AuthService = function () {
+    AuthService.$inject = ["$http", "$window", "$q"];
+    function AuthService($http, $window, $q) {
+        "ngInject";
+
+        _classCallCheck(this, AuthService);
+
+        this._$http = $http;
+        this._$q = $q;
+        this.localStorage = $window.localStorage;
+    }
+
+    _createClass(AuthService, [{
+        key: 'signin',
+        value: function signin(username, password) {
+            var _this = this;
+
+            var deferred = this._$q.defer();
+            this._$http.post('http://localhost:8000/authenticate', { username: username, password: password }).then(function (respond) {
+                _this.localStorage.token = respond.data.token;
+
+                deferred.resolve();
+            }, function (reason) {
+                delete _this.localStorage.token;
+
+                deferred.reject(reason.data);
+            });
+            return deferred.promise;
+        }
+    }, {
+        key: 'signout',
+        value: function signout() {
+            delete this.localStorage.token;
+        }
+    }, {
+        key: 'isSignedIn',
+        value: function isSignedIn() {
+            return this.localStorage.token != null;
+        }
+    }, {
+        key: 'isRequireAuthenForView',
+        value: function isRequireAuthenForView(view) {
+            if (view.data.authenticate == undefined) {
+                return false;
+            }
+            return view.data.authenticate;
+        }
+    }, {
+        key: 'hasPermissionForView',
+        value: function hasPermissionForView(view) {
+            var _this2 = this;
+
+            if (!view.data.permissions || !view.data.permissions.length) {
+                return true;
+            }
+
+            var found = false;
+            angular.forEach(view.data.permissions, function (permission) {
+                if (_this2.profile.permissions.indexOf(permission) >= 0) {
+                    found = true;
+                    return;
+                }
+            });
+            return found;
+        }
+    }, {
+        key: 'userHasPermission',
+        value: function userHasPermission(permissions) {
+            var _this3 = this;
+
+            var found = false;
+            angular.forEach(permissions, function (permission) {
+                if (_this3.profile.permissions.indexOf(permission) >= 0) {
+                    found = true;
+                    return;
+                }
+            });
+            return found;
+        }
+    }, {
+        key: 'profile',
+        get: function get() {
+            //this is used to parse the profile
+            function url_base64_decode(str) {
+                var output = str.replace('-', '+').replace('_', '/');
+                switch (output.length % 4) {
+                    case 0:
+                        break;
+                    case 2:
+                        output += '==';
+                        break;
+                    case 3:
+                        output += '=';
+                        break;
+                    default:
+                        throw 'Illegal base64url string!';
+                }
+                return window.atob(output); //polifyll https://github.com/davidchambers/Base64.js
+            }
+
+            var encodedProfile = this.localStorage.token.split('.')[1];
+            var profile = JSON.parse(url_base64_decode(encodedProfile));
+
+            return profile;
+        }
+    }]);
+
+    return AuthService;
+}();
+
+},{}],14:[function(require,module,exports){
+"use strict";
+
+var _auth = require("./auth.config");
+
+var _auth2 = require("./auth.service");
+
+var _auth3 = require("./auth.interceptor");
+
+var _auth4 = require("./auth.controller");
+
+/**
+ * @ngdoc overview
+ * @name Auth
+ *
+ * @description
+ * #Description
+ * Module for Auth page.
+ */
+angular.module("Auth").config(_auth.AuthConfig).service("AuthService", _auth2.AuthService).factory("authInterceptor", _auth3.authInterceptor).controller("AuthController", _auth4.AuthController);
+
+},{"./auth.config":10,"./auth.controller":11,"./auth.interceptor":12,"./auth.service":13}],15:[function(require,module,exports){
+"use strict";
+
 CartConfig.$inject = ["$stateProvider"];
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -4786,12 +5105,14 @@ function CartConfig($stateProvider) {
         controllerAs: "cart",
         title: "Cart",
         data: {
-            css: "/css/cart/cart.css"
+            css: "/css/cart/cart.css",
+            authenticate: true,
+            permissions: ["restricted"]
         }
     });
 };
 
-},{}],9:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4811,7 +5132,7 @@ var CartController = exports.CartController = function CartController() {
     _classCallCheck(this, CartController);
 };
 
-},{}],10:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 
 var _cart = require("./cart.config");
@@ -4820,7 +5141,7 @@ var _cart2 = require("./cart.controller");
 
 angular.module("Cart").config(_cart.CartConfig).controller("CartController", _cart2.CartController);
 
-},{"./cart.config":8,"./cart.controller":9}],11:[function(require,module,exports){
+},{"./cart.config":15,"./cart.controller":16}],18:[function(require,module,exports){
 "use strict";
 
 CommunityConfig.$inject = ["$stateProvider"];
@@ -4838,12 +5159,14 @@ function CommunityConfig($stateProvider) {
         controllerAs: "community",
         title: "Community",
         data: {
-            css: "/css/community/community.css"
+            css: "/css/community/community.css",
+            authenticate: true,
+            permissions: ["restricted"]
         }
     });
 };
 
-},{}],12:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4863,7 +5186,7 @@ var CommunityController = exports.CommunityController = function CommunityContro
     _classCallCheck(this, CommunityController);
 };
 
-},{}],13:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 
 var _community = require("./community.config");
@@ -4872,7 +5195,7 @@ var _community2 = require("./community.controller");
 
 angular.module("Community").config(_community.CommunityConfig).controller("CommunityController", _community2.CommunityController);
 
-},{"./community.config":11,"./community.controller":12}],14:[function(require,module,exports){
+},{"./community.config":18,"./community.controller":19}],21:[function(require,module,exports){
 "use strict";
 
 DowntownConfig.$inject = ["$stateProvider"];
@@ -4890,12 +5213,14 @@ function DowntownConfig($stateProvider) {
         controllerAs: "downtown",
         title: "Downtown",
         data: {
-            css: "/css/downtown/downtown.css"
+            css: "/css/downtown/downtown.css",
+            authenticate: true,
+            permissions: ["restricted"]
         }
     });
 };
 
-},{}],15:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4915,7 +5240,7 @@ var DowntownController = exports.DowntownController = function DowntownControlle
     _classCallCheck(this, DowntownController);
 };
 
-},{}],16:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 "use strict";
 
 var _downtown = require("./downtown.config");
@@ -4938,7 +5263,7 @@ function openCity(evt, cityName) {
     evt.currentTarget.className += " active";
 }
 
-},{"./downtown.config":14,"./downtown.controller":15}],17:[function(require,module,exports){
+},{"./downtown.config":21,"./downtown.controller":22}],24:[function(require,module,exports){
 "use strict";
 
 HelpConfig.$inject = ["$stateProvider"];
@@ -4956,12 +5281,14 @@ function HelpConfig($stateProvider) {
         controllerAs: "help",
         title: "Help",
         data: {
-            css: "/css/help/help.css"
+            css: "/css/help/help.css",
+            authenticate: true,
+            permissions: ["restricted"]
         }
     });
 };
 
-},{}],18:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4981,7 +5308,7 @@ var HelpController = exports.HelpController = function HelpController() {
     _classCallCheck(this, HelpController);
 };
 
-},{}],19:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 "use strict";
 
 var _help = require("./help.config");
@@ -4990,7 +5317,7 @@ var _help2 = require("./help.controller");
 
 angular.module("Help").config(_help.HelpConfig).controller("HelpController", _help2.HelpController);
 
-},{"./help.config":17,"./help.controller":18}],20:[function(require,module,exports){
+},{"./help.config":24,"./help.controller":25}],27:[function(require,module,exports){
 "use strict";
 
 HomeConfig.$inject = ["$stateProvider"];
@@ -5008,12 +5335,14 @@ function HomeConfig($stateProvider) {
         controllerAs: "home",
         title: "Home",
         data: {
-            css: "/css/home/home.css"
+            css: "/css/home/home.css",
+            authenticate: true,
+            permissions: ["restricted"]
         }
     });
 };
 
-},{}],21:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5033,7 +5362,7 @@ var HomeController = exports.HomeController = function HomeController() {
     _classCallCheck(this, HomeController);
 };
 
-},{}],22:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 "use strict";
 
 var _home = require("./home.config");
@@ -5143,10 +5472,10 @@ angular.module("Home").config(_home.HomeConfig).controller("HomeController", _ho
 //
 //})();
 
-},{"./home.config":20,"./home.controller":21}],23:[function(require,module,exports){
+},{"./home.config":27,"./home.controller":28}],30:[function(require,module,exports){
 "use strict";
 
-angular.module("MainApp", ["uiRouterStyles", "templates", "Home", "Cart", "Community", "Downtown", "Help", "Search", "Setting", "Signin"]);
+angular.module("MainApp", ["uiRouterStyles", "templates", "Home", "Cart", "Community", "Downtown", "Help", "Search", "Setting", "Signin", "Auth", "Directives"]);
 
 angular.module("Home", []);
 angular.module("Cart", []);
@@ -5157,7 +5486,11 @@ angular.module("Search", []);
 angular.module("Setting", []);
 angular.module("Signin", []);
 
-},{}],24:[function(require,module,exports){
+angular.module("Auth", []);
+
+angular.module("Directives", []);
+
+},{}],31:[function(require,module,exports){
 "use strict";
 
 var _search = require("./search.config");
@@ -5216,7 +5549,7 @@ angular.module("Search").config(_search.SearchConfig).controller("SearchControll
 //});
 //
 
-},{"./search.config":25,"./search.controller":26}],25:[function(require,module,exports){
+},{"./search.config":32,"./search.controller":33}],32:[function(require,module,exports){
 "use strict";
 
 SearchConfig.$inject = ["$stateProvider"];
@@ -5234,12 +5567,14 @@ function SearchConfig($stateProvider) {
         controllerAs: "search",
         title: "Search",
         data: {
-            css: "/css/search/search.css"
+            css: "/css/search/search.css",
+            authenticate: true,
+            permissions: ["restricted"]
         }
     });
 };
 
-},{}],26:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5259,7 +5594,7 @@ var SearchController = exports.SearchController = function SearchController() {
     _classCallCheck(this, SearchController);
 };
 
-},{}],27:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 "use strict";
 
 var _setting = require("./setting.config");
@@ -5268,7 +5603,7 @@ var _setting2 = require("./setting.controller");
 
 angular.module("Setting").config(_setting.SettingConfig).controller("SettingController", _setting2.SettingController);
 
-},{"./setting.config":28,"./setting.controller":29}],28:[function(require,module,exports){
+},{"./setting.config":35,"./setting.controller":36}],35:[function(require,module,exports){
 "use strict";
 
 SettingConfig.$inject = ["$stateProvider"];
@@ -5286,12 +5621,14 @@ function SettingConfig($stateProvider) {
         controllerAs: "setting",
         title: "Setting",
         data: {
-            css: "/css/setting/setting.css"
+            css: "/css/setting/setting.css",
+            authenticate: true,
+            permissions: ["restricted"]
         }
     });
 };
 
-},{}],29:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5311,7 +5648,7 @@ var SettingController = exports.SettingController = function SettingController()
     _classCallCheck(this, SettingController);
 };
 
-},{}],30:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 "use strict";
 
 var _signin = require("./signin.config");
@@ -5320,7 +5657,7 @@ var _signin2 = require("./signin.controller");
 
 angular.module("Signin").config(_signin.SigninConfig).controller("SigninController", _signin2.SigninController);
 
-},{"./signin.config":31,"./signin.controller":32}],31:[function(require,module,exports){
+},{"./signin.config":38,"./signin.controller":39}],38:[function(require,module,exports){
 "use strict";
 
 SigninConfig.$inject = ["$stateProvider"];
@@ -5338,17 +5675,21 @@ function SigninConfig($stateProvider) {
         controllerAs: "signin",
         title: "Signin",
         data: {
-            css: "/css/signin/signin.css"
+            css: "/css/signin/signin.css",
+            authenticate: true,
+            permissions: ["restricted"]
         }
     });
 };
 
-},{}],32:[function(require,module,exports){
-"use strict";
+},{}],39:[function(require,module,exports){
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -5357,27 +5698,62 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @name Signin.controller:SigninController
  * @description Controller for Singin module.
  */
-var SigninController = exports.SigninController = function SigninController() {
-    "ngInject";
+var SigninController = exports.SigninController = function () {
+    SigninController.$inject = ["AuthService"];
+    function SigninController(AuthService) {
+        "ngInject";
 
-    _classCallCheck(this, SigninController);
-};
+        _classCallCheck(this, SigninController);
 
-},{}],33:[function(require,module,exports){
+        this._AuthService = AuthService;
+        this.user = {
+            username: 'praewrung',
+            password: 'prawrung'
+        };
+        this.isAuthenticated = false;
+        this.welcome = '';
+        this.message = '';
+    }
+
+    _createClass(SigninController, [{
+        key: 'submit',
+        value: function submit() {
+            var _this = this;
+
+            this._AuthService.signin(this.user.username, this.user.password).then(function () {
+                _this.isAuthenticated = true;
+
+                var profile = _this._AuthService.profile;
+                _this.welcome = 'Welcome ' + profile.first_name + ' ' + profile.last_name;
+            }, function (data) {
+                // Erase the token if the user fails to log in
+                _this.isAuthenticated = false;
+
+                // Handle login errors here
+                _this.error = 'Error: ' + data;
+                _this.welcome = '';
+            });
+        }
+    }]);
+
+    return SigninController;
+}();
+
+},{}],40:[function(require,module,exports){
 'use strict';
 
 angular.module('templates', []).run(['$templateCache', function ($templateCache) {
-  $templateCache.put('modules/auth/auth.html', '<div class="jumbotron text-center">\r\n    <span ng-show="auth.isAuthenticated">{{auth.welcome}}</span>\r\n    <form ng-show="!auth.isAuthenticated" ng-submit="auth.submit()">\r\n        <input ng-model="auth.user.username" type="text" name="user" placeholder="Username" />\r\n        <input ng-model="auth.user.password" type="password" name="pass" placeholder="Password" />\r\n        <input type="submit" value="Login" />\r\n    </form>\r\n    <div>{{auth.error}}</div>\r\n    <div ng-show="auth.isAuthenticated">\r\n        <a ng-click="auth.callRestricted()" href="">Shh, this is private!</a>\r\n        <br>\r\n        <div>{{auth.message}}</div>\r\n        <a ng-click="auth.logout()" href="">Logout</a>\r\n    </div>\r\n</div>');
-  $templateCache.put('modules/auth/forbidden.html', '<h1>Forbidden</h1>');
   $templateCache.put('modules/cart/cart.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view class="pagetop col-md-12">\n           <h2>top</h2>\n            \n        </div>\n        <div ui-view class="pageleft col-xs-9 col-sm-2 col-md-3">\n            <h2>Left</h2>\n        </div>\n        <div ui-view class="pagecenter col-xs-12 col-sm-8 col-md-9">\n            <h1>Center</h1>\n            \n        </div>\n    </div>\n\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n    \n    \n</div>\n\n\n\n');
   $templateCache.put('modules/community/community.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view class="pagetop col-md-12 col-sm-12 col-xs-12">\n            <h2>Header</h2>\n        </div>\n        <div ui-view class="pageleft col-md-3 col-sm-2 col-xs-9 ">\n            \n            <div align="center">\n                <img src="/images/img_avatar.png" class="img-circle img-responsive">\n            </div>\n            \n        </div>\n        <div ui-view class="pagecenter  col-md-9 col-sm-8  col-xs-12">\n            <div class="col-md-12 col-sm-12 col-xs-12">\n                 \n                <div class="twt-wrapper">\n                    <div class="panel panel-info">\n                        \n                        <div class="panel-body">\n                            <textarea class="form-control" placeholder="What do you think?" rows="3"></textarea>\n                            <br />\n                            <a href="#" class="btn btn-primary btn-sm pull-right">Post</a>\n                            <div class="clearfix"></div>\n                            <hr />\n                            <ul class="media-list">\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ Rexona Kumi</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor sit amet, <a href="#"># consectetur adipiscing </a>.\n                                        </p>\n                                    </div>\n                                </li>\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ John Doe</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor <a href="#"># ipsum dolor </a>adipiscing elit.\n                                        </p>\n                                    </div>\n                                </li>\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ Madonae Jonisyi</strong>\n                                        <p>\n                                            Lorem ipsum dolor <a href="#"># sit amet</a> sit amet, consectetur adipiscing elit.\n                                        </p>\n                                    </div>\n                                </li>\n                            </ul>\n                            <span class="text-danger">237K users active</span>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n    \n    \n\n</div>\n\n\n\n\n\n<!--\n<div>\n    <div>This is Community page.</div>\n    <br>\n   \n\n\n\n    <div class="container">\n        \n\n        <div class="row">\n            <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4">\n                 TWEET WRAPPER START \n                <div class="twt-wrapper">\n                    <div class="panel panel-info">\n                        <div class="panel-heading">\n                            Time line \n                        </div>\n                        <div class="panel-body">\n                            <textarea class="form-control" placeholder="What do you think?" rows="3"></textarea>\n                            <br />\n                            <a href="#" class="btn btn-primary btn-sm pull-right">Post</a>\n                            <div class="clearfix"></div>\n                            <hr />\n                            <ul class="media-list">\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ Rexona Kumi</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor sit amet, <a href="#"># consectetur adipiscing </a>.\n                                        </p>\n                                    </div>\n                                </li>\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ John Doe</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor <a href="#"># ipsum dolor </a>adipiscing elit.\n                                        </p>\n                                    </div>\n                                </li>\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ Madonae Jonisyi</strong>\n                                        <p>\n                                            Lorem ipsum dolor <a href="#"># sit amet</a> sit amet, consectetur adipiscing elit.\n                                        </p>\n                                    </div>\n                                </li>\n                            </ul>\n                            <span class="text-danger">237K users active</span>\n                        </div>\n                    </div>\n                </div>\n               \n            </div>\n        </div>\n    </div>\n\n\n\n \n\n\n   \n\n</div>\n-->\n');
   $templateCache.put('modules/downtown/downtown.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view class="pagetop col-md-12">\n            <h2>Top</h2>\n        </div>\n        <div ui-view class="pageleft col-xs-9 col-sm-2 col-md-3">\n            <h2>Shop</h2>\n        </div>\n        <div ui-view class="pagecenter col-xs-12 col-sm-8 col-md-9">\n            <img src="/images/mall.png" class="img-responsive">\n        </div>\n    </div>\n\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n    \n    \n</div>\n\n\n');
-  $templateCache.put('modules/help/help.html', '<div id="homepage " class="row  ">\n     <div class="col-md-9 col-sm-9 col-xs-12 ">\n        <div ui-view class="pagetop col-md-12 col-sm-12 col-xs-12">\n           <div style="display:inline-block;width:100%;">\n               <span class="helpfont">Help</span>\n<!--\n               <p class="pull-right visible-xs">\n                <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle Chat</button>\n              </p>\n-->\n              \n           </div>\n            \n        </div>\n        <div ui-view class="pageleft col-md-3 col-sm-3 col-xs-12 ">\n            <h1>Contact</h1>\n        </div>\n        <div ui-view class="pagecenter col-md-9 col-sm-9 col-xs=12 ">\n            <div class="card col-md-4 col-sm-6 col-xs=12">\n                <img align="center" src="/images/img_avatar.png" class="img-responsive" alt="Avatar" >\n                <div class="containerg">\n                    <h4><b>John Doe</b></h4>\n                    <p>Architect & Engineer</p>\n                </div>\n            </div>\n            <div class="card col-md-4 col-sm-6 col-xs=12">\n                <img align="center" src="/images/img_avatar.png" class="img-responsive" alt="Avatar" >\n                <div class="containerg">\n                    <h4><b>John Doe</b></h4>\n                    <p>Architect & Engineer</p>\n                </div>\n            </div>\n            <div class="card col-md-4 col-sm-6 col-xs=12">\n                <img align="center" src="/images/img_avatar.png" class="img-responsive" alt="Avatar" >\n                <div class="containerg">\n                    <h4><b>John Doe</b></h4>\n                    <p>Architect & Engineer</p>\n                </div>\n            </div>\n        </div>\n      \n    </div>\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n</div>\n\n\n\n\n\n<!--\n<div>\n    <div>This is Help page.</div>\n    <br>\n    <h2>Contact</h2>\n\n    <div class="card" >\n      <img align="center" src="/images/img_avatar.png" alt="Avatar" style="width:100%">\n      <div class="containerg" >\n        <h4><b>John Doe</b></h4>\n        <p>Architect & Engineer</p>\n      </div>\n    </div>\n\n\n</div>\n-->\n');
+  $templateCache.put('modules/auth/auth.html', '<div class="jumbotron text-center">\r\n    <span ng-show="auth.isAuthenticated">{{auth.welcome}}</span>\r\n    <form ng-show="!auth.isAuthenticated" ng-submit="auth.submit()">\r\n        <input ng-model="auth.user.username" type="text" name="user" placeholder="Username" />\r\n        <input ng-model="auth.user.password" type="password" name="pass" placeholder="Password" />\r\n        <input type="submit" value="Login" />\r\n    </form>\r\n    <div>{{auth.error}}</div>\r\n    <div ng-show="auth.isAuthenticated">\r\n        <a ng-click="auth.callRestricted()" href="">Shh, this is private!</a>\r\n        <br>\r\n        <div>{{auth.message}}</div>\r\n        <a ng-click="auth.logout()" href="">Logout</a>\r\n    </div>\r\n</div>');
+  $templateCache.put('modules/auth/forbidden.html', '<h1>Forbidden</h1>');
+  $templateCache.put('modules/help/help.html', '<div id="homepage " class="row  ">\n     <div class="col-md-9 col-sm-9 col-xs-12 ">\n        <div ui-view class="pagetop col-md-12 col-sm-12 col-xs-12">\n           <div style="display:inline-block;width:100%;">\n               <h2>Help</h2>\n<!--\n               <p class="pull-right visible-xs">\n                <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle Chat</button>\n              </p>\n-->\n              \n           </div>\n            \n        </div>\n        <div ui-view class="pageleft col-md-3 col-sm-3 col-xs-12 ">\n            <h1>Contact</h1>\n        </div>\n        <div ui-view class="pagecenter col-md-9 col-sm-9 col-xs=12 ">\n            <div class="card col-md-4 col-sm-6 col-xs=12">\n                <img align="center" src="/images/img_avatar.png" class="img-responsive" alt="Avatar" >\n                <div class="containerg">\n                    <h4><b>John Doe</b></h4>\n                    <p>Architect & Engineer</p>\n                </div>\n            </div>\n            <div class="card col-md-4 col-sm-6 col-xs=12">\n                <img align="center" src="/images/img_avatar.png" class="img-responsive" alt="Avatar" >\n                <div class="containerg">\n                    <h4><b>John Doe</b></h4>\n                    <p>Architect & Engineer</p>\n                </div>\n            </div>\n            <div class="card col-md-4 col-sm-6 col-xs=12">\n                <img align="center" src="/images/img_avatar.png" class="img-responsive" alt="Avatar" >\n                <div class="containerg">\n                    <h4><b>John Doe</b></h4>\n                    <p>Architect & Engineer</p>\n                </div>\n            </div>\n        </div>\n      \n    </div>\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n</div>\n\n\n\n\n\n<!--\n<div>\n    <div>This is Help page.</div>\n    <br>\n    <h2>Contact</h2>\n\n    <div class="card" >\n      <img align="center" src="/images/img_avatar.png" alt="Avatar" style="width:100%">\n      <div class="containerg" >\n        <h4><b>John Doe</b></h4>\n        <p>Architect & Engineer</p>\n      </div>\n    </div>\n\n\n</div>\n-->\n');
   $templateCache.put('modules/home/home.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view class="pagetop col-md-12 col-sm-12 col-xs-12">\n            <h2>Rainny</h2>\n        </div>\n        <div ui-view class="pageleft col-md-3 col-sm-2 ">\n            <div align="center">\n                <img src="/images/img_avatar.png" class="img-circle img-responsive">\n            </div>\n        </div>\n        <div ui-view class="pagecenter col-xs-12 col-sm-8 col-md-9">\n            <div class="col-md-12 col-sm-12 col-xs-12">\n                 \n                <div class="twt-wrapper">\n                    <div class="panel panel-info">\n                        \n                        <div class="panel-body">\n                            <textarea class="form-control" placeholder="What do you think?" rows="3"></textarea>\n                            <br />\n                            <a href="#" class="btn btn-primary btn-sm pull-right">Post</a>\n                            <div class="clearfix"></div>\n                            <hr />\n                            <ul class="media-list">\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ Rexona Kumi</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor sit amet, <a href="#"># consectetur adipiscing </a>.\n                                        </p>\n                                    </div>\n                                </li>\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ John Doe</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor <a href="#"># ipsum dolor </a>adipiscing elit.\n                                        </p>\n                                    </div>\n                                </li>\n                               \n                            </ul>\n                        \n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class="col-md-12 col-sm-12 col-xs-12">\n                 \n                <div class="twt-wrapper">\n                    <div class="panel panel-info">\n                        \n                        <div class="panel-body">\n                            <div class="clearfix"></div>\n                            <hr />\n                            <ul class="media-list">\n                                <li class="media">\n                                    \n                                    <div class="media-body">\n                                        \n                                        <p>\n                                           Enter your message here...\n                                            To be or not to be,\n                                            that is the question...\n                                            maybe, I think,\n                                            I\'m not sure\n                                            wait, you\'re still reading this?\n                                            Type a good message already!\n                                        </p>\n                                    </div>\n                                </li>\n                                \n                               \n                            </ul>\n                        \n                        </div>\n                    </div>\n                </div>\n            </div>\n        ` </div>\n        </div>\n    \n         \n    \n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n         \n    \n</div>\n');
-  $templateCache.put('modules/search/search.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view class="pagetop col-md-12">\n            <h2>Top</h2>\n<!--\n            <div class="searchc">\n              <svg class="searchc-svg" viewBox="0 0 320 70"\n                   data-init="M160,3 L160,3 a27,27 0 0,1 0,54 L160,57 a27,27 0 0,1 0,-54 M197,67 181.21,51.21"\n                   data-mid="M160,3 L160,3 a27,27 0 0,1 0,54 L160,57 a27,27 0 0,1 0,-54 M179.5,49.5 179.5,49.5"\n                   data-active="M27,3 L293,3 a27,27 0 0,1 0,54 L27,57 a27,27 0 0,1 0,-54 M179.5,49.5 179.5,49.5">\n                <path class="searchc-svg__path" d="M160,3 L160,3 a27,27 0 0,1 0,54 L160,57 a27,27 0 0,1 0,-54 M197,67 181.21,51.21" />\n              </svg>\n              <input type="text" class="searchc-input" />\n              <div class="searchc-close"></div>\n            </div>\n-->\n\n        </div>\n        <div ui-view class="pageleft col-xs-9 col-sm-2 col-md-3">\n            fghgfhgfh\n        </div>\n        <div ui-view class="pagecenter col-xs-12 col-sm-8 col-md-9">\n            fghgfhgfh\n        </div>\n    </div>\n\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n    \n    \n</div>\n\n\n');
   $templateCache.put('modules/setting/setting.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view class="pagetop col-md-12">\n            <h2>Setting</h2>\n        </div>\n        <div ui-view class="pageleft col-xs-9 col-sm-2 col-md-3">\n            fghgfhgfh\n        </div>\n        <div ui-view class="pagecenter col-xs-12 col-sm-8 col-md-9">\n            fghgfhgfh\n        </div>\n    </div>\n\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n    \n    \n</div>\n\n\n');
   $templateCache.put('modules/signin/signin.html', '<div>\n\n    <div class="top-content">\n        \t\n            <div class="inner-bg">\n                <div class="container">\n                \t\n                    <div class="row">\n                        <div class="col-sm-8 col-sm-offset-2 text">\n\n\n                        </div>\n                    </div>\n                    \n                    <div class="row">\n                        <div class="col-sm-5">\n                        \t\n                        \t<div class="form-box">\n\t                        \t<div class="form-top">\n\t                        \t\t<div class="form-top-left">\n\t                        \t\t\t<h3>Login to our site</h3>\n\t                            \t\t<p>Enter username and password to log on:</p>\n\t                        \t\t</div>\n\t                        \t\t<div class="form-top-right">\n\t                        \t\t\t<i class="fa fa-key"></i>\n\t                        \t\t</div>\n\t                            </div>\n\t                            <div class="form-bottom">\n\t\t\t\t                    <form role="form" action="" method="post" class="login-form">\n\t\t\t\t                    \t<div class="form-group">\n\t\t\t\t                    \t\t<label class="sr-only" for="form-username">Username</label>\n\t\t\t\t                        \t<input type="text" name="form-username" placeholder="Username..." class="form-username form-control" id="form-username">\n\t\t\t\t                        </div>\n\t\t\t\t                        <div class="form-group">\n\t\t\t\t                        \t<label class="sr-only" for="form-password">Password</label>\n\t\t\t\t                        \t<input type="password" name="form-password" placeholder="Password..." class="form-password form-control" id="form-password">\n\t\t\t\t                        </div>\n\t\t\t\t                        <button type="submit" class="btn">Sign in!</button>\n\t\t\t\t                    </form>\n\t\t\t                    </div>\n\t\t                    </div>\n\t\t                \n\n\t                        \n                        </div>\n                        \n                        <div class="col-sm-1 middle-border"></div>\n                        <div class="col-sm-1"></div>\n                        \t\n                        <div class="col-sm-5">\n                        \t\n                        \t<div class="form-box">\n                        \t\t<div class="form-top">\n\t                        \t\t<div class="form-top-left">\n\t                        \t\t\t<h3>Sign up now</h3>\n\t                            \t\t<p>Fill in the form below to get instant access:</p>\n\t                        \t\t</div>\n\t                        \t\t<div class="form-top-right">\n\t                        \t\t\t<i class="fa fa-pencil"></i>\n\t                        \t\t</div>\n\t                            </div>\n\t                            <div class="form-bottom">\n\t\t\t\t                    <form role="form" action="" method="post" class="registration-form">\n\t\t\t\t                    \t<div class="form-group">\n\t\t\t\t                    \t\t<label class="sr-only" for="form-first-name">First name</label>\n\t\t\t\t                        \t<input type="text" name="form-first-name" placeholder="First name..." class="form-first-name form-control" id="form-first-name">\n\t\t\t\t                        </div>\n\t\t\t\t                        <div class="form-group">\n\t\t\t\t                        \t<label class="sr-only" for="form-last-name">Last name</label>\n\t\t\t\t                        \t<input type="text" name="form-last-name" placeholder="Last name..." class="form-last-name form-control" id="form-last-name">\n\t\t\t\t                        </div>\n\t\t\t\t                        <div class="form-group">\n\t\t\t\t                        \t<label class="sr-only" for="form-email">Email</label>\n\t\t\t\t                        \t<input type="text" name="form-email" placeholder="Email..." class="form-email form-control" id="form-email">\n\t\t\t\t                        </div>\n\t\t\t\t                        <div class="form-group">\n\t\t\t\t                        \t<label class="sr-only" for="form-about-yourself">About yourself</label>\n\t\t\t\t                        \t<textarea name="form-about-yourself" placeholder="About yourself..." \n\t\t\t\t                        \t\t\t\tclass="form-about-yourself form-control" id="form-about-yourself"></textarea>\n\t\t\t\t                        </div>\n\t\t\t\t                        <button type="submit" class="btn">Sign me up!</button>\n\t\t\t\t                    </form>\n\t\t\t                    </div>\n                        \t</div>\n                        \t\n                        </div>\n                    </div>\n                    \n                </div>\n            </div>\n            \n        </div>\n\n</div>\n');
   $templateCache.put('modules/user/user.html', '<div>\n    <div>This is user page.</div>\n    <div>\n        <button ng-click="$ctrl.listUsers()" class="btn">List</button>\n    </div>\n    <div>\n        <ui ng-repeat="user in $ctrl.list_user">\n            <li class="user-listitem">{{ user.name }} {{ user.position }}</li>\n        </ui>\n    </div>\n    <div class="emotion-disappoint"></div>\n</div>\n');
+  $templateCache.put('modules/search/search.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view class="pagetop col-md-12">\n            <h2>Top</h2>\n<!--\n            <div class="searchc">\n              <svg class="searchc-svg" viewBox="0 0 320 70"\n                   data-init="M160,3 L160,3 a27,27 0 0,1 0,54 L160,57 a27,27 0 0,1 0,-54 M197,67 181.21,51.21"\n                   data-mid="M160,3 L160,3 a27,27 0 0,1 0,54 L160,57 a27,27 0 0,1 0,-54 M179.5,49.5 179.5,49.5"\n                   data-active="M27,3 L293,3 a27,27 0 0,1 0,54 L27,57 a27,27 0 0,1 0,-54 M179.5,49.5 179.5,49.5">\n                <path class="searchc-svg__path" d="M160,3 L160,3 a27,27 0 0,1 0,54 L160,57 a27,27 0 0,1 0,-54 M197,67 181.21,51.21" />\n              </svg>\n              <input type="text" class="searchc-input" />\n              <div class="searchc-close"></div>\n            </div>\n-->\n\n        </div>\n        <div ui-view class="pageleft col-xs-9 col-sm-2 col-md-3">\n            <h2>\n                Search\n            </h2>\n        </div>\n        <div ui-view class="pagecenter col-xs-12 col-sm-8 col-md-9">\n            fghgfhgfh\n        </div>\n    </div>\n\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n    \n    \n</div>\n\n\n');
 }]);
 
 },{}]},{},[3]);
