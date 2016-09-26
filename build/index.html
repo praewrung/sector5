@@ -24,9 +24,12 @@
 
     <!-- Theme CSS -->
     <link href="/css/creative.css" rel="stylesheet">
+
     <link href="/css/(main-app)/main-app.css" rel="stylesheet">
     <link href="/css/(main-app)/offcanvas.css" rel="stylesheet">
     <link href="/css/(main-app)/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="css/megamenu.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/css/(main-app)/style.css" rel="stylesheet">
 
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -67,7 +70,7 @@
                         <a ui-sref="downtown">Downtown</a>
                     </li>
                     <li>
-                        <a ui-sref="search">Search</a>
+                        <a href="#search">Search</a>
                     </li>
                     <li>
                         <a ui-sref="cart">Cart</a>
@@ -95,7 +98,13 @@
         <div ui-view></div>
     </div>
 
-
+    <div id="search">
+        <button type="button" class="close">×</button>
+        <form>
+            <input type="search" value="" placeholder="type keyword(s) here" />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
 
     <!-- jQuery -->
     <script src="/libs/jquery/jquery.min.js"></script>
@@ -117,10 +126,14 @@
 
     <script src="/js/scripts.js"></script>
     <script src="/js/placeholder.js"></script>
-    <script src="/js/scripts.js"></script>
+    <script src="/js/search.js"></script>
     <script src="/js/ie-emulation-modes-warning.js"></script>
     <script src="/js/ie10-viewport-bug-workaround.js"></script>
     <script src="/js/offcanvas.js"></script>
+    <script type="text/javascript" src="/js/megamenu.js"></script>
+    <script>$(document).ready(function(){$(".megamenu").megamenu();});</script>
+    <script src="/js/menu_jquery.js"></script>
+    <script src="/js/simpleCart.min.js"> </script>
 
 </body>
 
