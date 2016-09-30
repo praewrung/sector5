@@ -86,6 +86,15 @@ NG_DOCS={
     },
     {
       "section": "api",
+      "id": "Main.controller:MainController",
+      "shortName": "MainController",
+      "type": "controller",
+      "moduleName": "Main",
+      "shortDescription": "Controller for Main module.",
+      "keywords": "api controller main maincontroller module"
+    },
+    {
+      "section": "api",
       "id": "MainApp",
       "shortName": "MainApp",
       "type": "overview",

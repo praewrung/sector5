@@ -4674,14 +4674,16 @@ require("./modules/auth/");
 
 require("./modules/[directives]/");
 
-},{"./modules/(main-app)/":4,"./modules/[directives]/":8,"./modules/auth/":14,"./modules/cart/":17,"./modules/community/":20,"./modules/downtown/":23,"./modules/help/":26,"./modules/home/":29,"./modules/modules":30,"./modules/search/":31,"./modules/setting/":34,"./modules/signin/":37,"./modules/templates/templates.module":40,"angular-ui-router":2,"angular-ui-router-styles/ui-router-styles":1}],4:[function(require,module,exports){
+},{"./modules/(main-app)/":4,"./modules/[directives]/":9,"./modules/auth/":15,"./modules/cart/":18,"./modules/community/":21,"./modules/downtown/":24,"./modules/help/":27,"./modules/home/":30,"./modules/modules":31,"./modules/search/":32,"./modules/setting/":35,"./modules/signin/":38,"./modules/templates/templates.module":41,"angular-ui-router":2,"angular-ui-router-styles/ui-router-styles":1}],4:[function(require,module,exports){
 "use strict";
 
 var _mainApp = require("./main-app.constant");
 
-var _mainApp2 = require("./main-app.config");
+var _mainApp2 = require("./main-app.controller");
 
-var _mainApp3 = require("./main-app.run");
+var _mainApp3 = require("./main-app.config");
+
+var _mainApp4 = require("./main-app.run");
 
 /**
  * @ngdoc overview
@@ -4691,7 +4693,7 @@ var _mainApp3 = require("./main-app.run");
  * #Description
  * Top-level module of application.
  */
-angular.module("MainApp").constant("MainAppConstant", _mainApp.MainAppConstant).config(_mainApp2.MainAppConfig).run(_mainApp3.MainAppRun);
+angular.module("MainApp").constant("MainAppConstant", _mainApp.MainAppConstant).config(_mainApp3.MainAppConfig).controller("MainController", _mainApp2.MainController).run(_mainApp4.MainAppRun);
 
 $(function () {
     $('a[href="#search"]').on('click', function (event) {
@@ -4713,7 +4715,7 @@ $(function () {
     });
 });
 
-},{"./main-app.config":5,"./main-app.constant":6,"./main-app.run":7}],5:[function(require,module,exports){
+},{"./main-app.config":5,"./main-app.constant":6,"./main-app.controller":7,"./main-app.run":8}],5:[function(require,module,exports){
 "use strict";
 
 MainAppConfig.$inject = ["$urlRouterProvider", "$stateProvider", "$locationProvider"];
@@ -4765,6 +4767,26 @@ var MainAppConstant = exports.MainAppConstant = {
 },{}],7:[function(require,module,exports){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @ngdoc controller
+ * @name Main.controller:MainController
+ * @description Controller for Main module.
+ */
+var MainController = exports.MainController = function MainController() {
+    "ngInject";
+
+    _classCallCheck(this, MainController);
+};
+
+},{}],8:[function(require,module,exports){
+"use strict";
+
 MainAppRun.$inject = ["MainAppConstant", "$rootScope", "$state", "AuthService"];
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -4798,7 +4820,7 @@ function MainAppRun(MainAppConstant, $rootScope, $state, AuthService) {
     };
 };
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 
 var _permissions = require("./permissions/permissions");
@@ -4812,7 +4834,7 @@ var _permissions = require("./permissions/permissions");
  */
 angular.module("Directives").directive("permissions", ["AuthService", _permissions.permissions]);
 
-},{"./permissions/permissions":9}],9:[function(require,module,exports){
+},{"./permissions/permissions":10}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4836,7 +4858,7 @@ function permissions(AuthService) {
     };
 };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 "use strict";
 
 AuthConfig.$inject = ["$stateProvider", "$httpProvider"];
@@ -4865,7 +4887,7 @@ function AuthConfig($stateProvider, $httpProvider) {
     });
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4948,7 +4970,7 @@ var AuthController = exports.AuthController = function () {
     return AuthController;
 }();
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4973,7 +4995,7 @@ function authInterceptor($rootScope, $q, $window) {
     };
 };
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5099,7 +5121,7 @@ var AuthService = exports.AuthService = function () {
     return AuthService;
 }();
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 
 var _auth = require("./auth.config");
@@ -5120,7 +5142,7 @@ var _auth4 = require("./auth.controller");
  */
 angular.module("Auth").config(_auth.AuthConfig).service("AuthService", _auth2.AuthService).factory("authInterceptor", _auth3.authInterceptor).controller("AuthController", _auth4.AuthController);
 
-},{"./auth.config":10,"./auth.controller":11,"./auth.interceptor":12,"./auth.service":13}],15:[function(require,module,exports){
+},{"./auth.config":11,"./auth.controller":12,"./auth.interceptor":13,"./auth.service":14}],16:[function(require,module,exports){
 "use strict";
 
 CartConfig.$inject = ["$stateProvider"];
@@ -5145,7 +5167,7 @@ function CartConfig($stateProvider) {
     });
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5159,22 +5181,40 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @name Cart.controller:CartController
  * @description Controller for Cart module.
  */
-var CartController = exports.CartController = function CartController() {
+var CartTopController = exports.CartTopController = function CartTopController() {
     "ngInject";
 
-    _classCallCheck(this, CartController);
+    _classCallCheck(this, CartTopController);
 };
 
-},{}],17:[function(require,module,exports){
+var CartLeftController = exports.CartLeftController = function CartLeftController() {
+    "ngInject";
+
+    _classCallCheck(this, CartLeftController);
+};
+
+var CartCenterController = exports.CartCenterController = function CartCenterController() {
+    "ngInject";
+
+    _classCallCheck(this, CartCenterController);
+};
+
+var CartRightController = exports.CartRightController = function CartRightController() {
+    "ngInject";
+
+    _classCallCheck(this, CartRightController);
+};
+
+},{}],18:[function(require,module,exports){
 "use strict";
 
 var _cart = require("./cart.config");
 
 var _cart2 = require("./cart.controller");
 
-angular.module("Cart").config(_cart.CartConfig).controller("CartController", _cart2.CartController);
+angular.module("Cart").config(_cart.CartConfig).controller("CartTopController", _cart2.CartTopController).controller("CartLeftController", _cart2.CartLeftController).controller("CartCenterController", _cart2.CartCenterController).controller("CartRightController", _cart2.CartRightController);
 
-},{"./cart.config":15,"./cart.controller":16}],18:[function(require,module,exports){
+},{"./cart.config":16,"./cart.controller":17}],19:[function(require,module,exports){
 "use strict";
 
 CommunityConfig.$inject = ["$stateProvider"];
@@ -5187,19 +5227,59 @@ function CommunityConfig($stateProvider) {
 
     $stateProvider.state("community", {
         url: "/community",
-        templateUrl: "modules/community/community.html",
-        controller: "CommunityController",
-        controllerAs: "community",
         title: "Community",
-        data: {
-            css: "/css/community/community.css",
-            authenticate: true,
-            permissions: ["restricted"]
+
+        view: {
+            "top": {
+                templateUrl: "modules/community/community-top.html",
+                controller: "CommunityTopController",
+                controllerAs: "community",
+
+                data: {
+                    css: "/css/community/community.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "left": {
+                templateUrl: "modules/community/community-left.html",
+                controller: "CommunityLeftController",
+                controllerAs: "community",
+
+                data: {
+                    css: "/css/community/community.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "center": {
+                templateUrl: "modules/community/community-center.html",
+                controller: "CommunityCenterController",
+                controllerAs: "community",
+
+                data: {
+                    css: "/css/community/community.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "right": {
+                templateUrl: "modules/community/community-right.html",
+                controller: "CommunityRightController",
+                controllerAs: "community",
+
+                data: {
+                    css: "/css/community/community.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            }
+
         }
     });
 };
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5213,22 +5293,40 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @name Community.controller:CommunityController
  * @description Controller for Community module.
  */
-var CommunityController = exports.CommunityController = function CommunityController() {
+var CommunityTopController = exports.CommunityTopController = function CommunityTopController() {
     "ngInject";
 
-    _classCallCheck(this, CommunityController);
+    _classCallCheck(this, CommunityTopController);
 };
 
-},{}],20:[function(require,module,exports){
+var CommunityLeftController = exports.CommunityLeftController = function CommunityLeftController() {
+    "ngInject";
+
+    _classCallCheck(this, CommunityLeftController);
+};
+
+var CommunityCenterController = exports.CommunityCenterController = function CommunityCenterController() {
+    "ngInject";
+
+    _classCallCheck(this, CommunityCenterController);
+};
+
+var CommunityRightController = exports.CommunityRightController = function CommunityRightController() {
+    "ngInject";
+
+    _classCallCheck(this, CommunityRightController);
+};
+
+},{}],21:[function(require,module,exports){
 "use strict";
 
 var _community = require("./community.config");
 
 var _community2 = require("./community.controller");
 
-angular.module("Community").config(_community.CommunityConfig).controller("CommunityController", _community2.CommunityController);
+angular.module("Community").config(_community.CommunityConfig).controller("CommunityTopController", _community2.CommunityTopController).controller("CommunityLeftController", _community2.CommunityLeftController).controller("CommunityCenterController", _community2.CommunityCenterController).controller("CommunityRightController", _community2.CommunityRightController);
 
-},{"./community.config":18,"./community.controller":19}],21:[function(require,module,exports){
+},{"./community.config":19,"./community.controller":20}],22:[function(require,module,exports){
 "use strict";
 
 DowntownConfig.$inject = ["$stateProvider"];
@@ -5241,19 +5339,60 @@ function DowntownConfig($stateProvider) {
 
     $stateProvider.state("downtown", {
         url: "/downtown",
-        templateUrl: "modules/downtown/downtown.html",
-        controller: "DowntownController",
-        controllerAs: "downtown",
         title: "Downtown",
-        data: {
-            css: "/css/downtown/downtown.css",
-            authenticate: true,
-            permissions: ["restricted"]
+
+        view: {
+            "top": {
+                templateUrl: "modules/downtown/downtown-top.html",
+                controller: "DowntownTopController",
+                controllerAs: "downtown",
+
+                data: {
+                    css: "/css/downtown/downtown.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "left": {
+                templateUrl: "modules/downtown/downtown-left.html",
+                controller: "DowntownLeftController",
+                controllerAs: "downtown",
+
+                data: {
+                    css: "/css/downtown/downtown.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "center": {
+                templateUrl: "modules/downtown/downtown-center.html",
+                controller: "DowntownCenterController",
+                controllerAs: "downtown",
+
+                data: {
+                    css: "/css/downtown/downtown.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "right": {
+                templateUrl: "modules/downtown/downtown-right.html",
+                controller: "DowntownRightController",
+                controllerAs: "downtown",
+
+                data: {
+                    css: "/css/downtown/downtown.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            }
+
         }
+
     });
 };
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5267,20 +5406,38 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @name Downtown.controller:DowntownController
  * @description Controller for Downtown module.
  */
-var DowntownController = exports.DowntownController = function DowntownController() {
+var DowntownTopController = exports.DowntownTopController = function DowntownTopController() {
     "ngInject";
 
-    _classCallCheck(this, DowntownController);
+    _classCallCheck(this, DowntownTopController);
 };
 
-},{}],23:[function(require,module,exports){
+var DowntownLeftController = exports.DowntownLeftController = function DowntownLeftController() {
+    "ngInject";
+
+    _classCallCheck(this, DowntownLeftController);
+};
+
+var DowntownCenterController = exports.DowntownCenterController = function DowntownCenterController() {
+    "ngInject";
+
+    _classCallCheck(this, DowntownCenterController);
+};
+
+var DowntownRightController = exports.DowntownRightController = function DowntownRightController() {
+    "ngInject";
+
+    _classCallCheck(this, DowntownRightController);
+};
+
+},{}],24:[function(require,module,exports){
 "use strict";
 
 var _downtown = require("./downtown.config");
 
 var _downtown2 = require("./downtown.controller");
 
-angular.module("Downtown").config(_downtown.DowntownConfig).controller("DowntownController", _downtown2.DowntownController);
+angular.module("Downtown").config(_downtown.DowntownConfig).controller("DowntownTopController", _downtown2.DowntownTopController).controller("DowntownLeftController", _downtown2.DowntownLeftController).controller("DowntownCenterController", _downtown2.DowntownCenterController).controller("DowntownRightController", _downtown2.DowntownRightController);
 
 function openCity(evt, cityName) {
     var i, tabcontent, tablinks;
@@ -5296,7 +5453,7 @@ function openCity(evt, cityName) {
     evt.currentTarget.className += " active";
 }
 
-},{"./downtown.config":21,"./downtown.controller":22}],24:[function(require,module,exports){
+},{"./downtown.config":22,"./downtown.controller":23}],25:[function(require,module,exports){
 "use strict";
 
 HelpConfig.$inject = ["$stateProvider"];
@@ -5309,19 +5466,61 @@ function HelpConfig($stateProvider) {
 
     $stateProvider.state("help", {
         url: "/help",
-        templateUrl: "modules/help/help.html",
-        controller: "HelpController",
-        controllerAs: "help",
         title: "Help",
-        data: {
-            css: "/css/help/help.css",
-            authenticate: true,
-            permissions: ["restricted"]
+
+        view: {
+
+            "top": {
+                templateUrl: "modules/help/help-top.html",
+                controller: "HelpTopController",
+                controllerAs: "help",
+
+                data: {
+                    css: "/css/help/help.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "left": {
+                templateUrl: "modules/help/help-left.html",
+                controller: "HelpLeftController",
+                controllerAs: "help",
+
+                data: {
+                    css: "/css/help/help.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "center": {
+                templateUrl: "modules/help/help-center.html",
+                controller: "HelpCenterController",
+                controllerAs: "help",
+
+                data: {
+                    css: "/css/help/help.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "right": {
+                templateUrl: "modules/help/help-right.html",
+                controller: "HelpRightController",
+                controllerAs: "help",
+
+                data: {
+                    css: "/css/help/help.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            }
+
         }
+
     });
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5335,22 +5534,40 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @name Help.controller:HelpController
  * @description Controller for Help module.
  */
-var HelpController = exports.HelpController = function HelpController() {
+var HelpTopController = exports.HelpTopController = function HelpTopController() {
     "ngInject";
 
-    _classCallCheck(this, HelpController);
+    _classCallCheck(this, HelpTopController);
 };
 
-},{}],26:[function(require,module,exports){
+var HelpLeftController = exports.HelpLeftController = function HelpLeftController() {
+    "ngInject";
+
+    _classCallCheck(this, HelpLeftController);
+};
+
+var HelpCenterController = exports.HelpCenterController = function HelpCenterController() {
+    "ngInject";
+
+    _classCallCheck(this, HelpCenterController);
+};
+
+var HelpRightController = exports.HelpRightController = function HelpRightController() {
+    "ngInject";
+
+    _classCallCheck(this, HelpRightController);
+};
+
+},{}],27:[function(require,module,exports){
 "use strict";
 
 var _help = require("./help.config");
 
 var _help2 = require("./help.controller");
 
-angular.module("Help").config(_help.HelpConfig).controller("HelpController", _help2.HelpController);
+angular.module("Help").config(_help.HelpConfig).controller("HelpTopController", _help2.HelpTopController).controller("HelpLeftController", _help2.HelpLeftController).controller("HelpCenterController", _help2.HelpCenterController).controller("HelpRightController", _help2.HelpRightController);
 
-},{"./help.config":24,"./help.controller":25}],27:[function(require,module,exports){
+},{"./help.config":25,"./help.controller":26}],28:[function(require,module,exports){
 "use strict";
 
 HomeConfig.$inject = ["$stateProvider"];
@@ -5363,19 +5580,59 @@ function HomeConfig($stateProvider) {
 
     $stateProvider.state("home", {
         url: "/home",
-        templateUrl: "modules/home/home.html",
-        controller: "HomeController",
-        controllerAs: "home",
         title: "Home",
-        data: {
-            css: "/css/home/home.css",
-            authenticate: true,
-            permissions: ["restricted"]
+
+        views: {
+            "top": {
+                templateUrl: "modules/home/home-top.html",
+                controller: "HomeTopController",
+                controllerAs: "home",
+
+                data: {
+                    css: "/css/home/home.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "left": {
+                templateUrl: "modules/home/home-left.html",
+                controller: "HomeLeftController",
+                controllerAs: "home",
+
+                data: {
+                    css: "/css/home/home.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "center": {
+                templateUrl: "modules/home/home-center.html",
+                controller: "HomeCenterController",
+                controllerAs: "home",
+
+                data: {
+                    css: "/css/home/home.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "right": {
+                templateUrl: "modules/home/home-right.html",
+                controller: "HomeRightController",
+                controllerAs: "home",
+
+                data: {
+                    css: "/css/home/home.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            }
         }
+
     });
 };
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5389,20 +5646,38 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @name Home.controller:HomeController
  * @description Controller for Home module.
  */
-var HomeController = exports.HomeController = function HomeController() {
+var HomeTopController = exports.HomeTopController = function HomeTopController() {
     "ngInject";
 
-    _classCallCheck(this, HomeController);
+    _classCallCheck(this, HomeTopController);
 };
 
-},{}],29:[function(require,module,exports){
+var HomeLeftController = exports.HomeLeftController = function HomeLeftController() {
+    "ngInject";
+
+    _classCallCheck(this, HomeLeftController);
+};
+
+var HomeCenterController = exports.HomeCenterController = function HomeCenterController() {
+    "ngInject";
+
+    _classCallCheck(this, HomeCenterController);
+};
+
+var HomeRightController = exports.HomeRightController = function HomeRightController() {
+    "ngInject";
+
+    _classCallCheck(this, HomeRightController);
+};
+
+},{}],30:[function(require,module,exports){
 "use strict";
 
 var _home = require("./home.config");
 
 var _home2 = require("./home.controller");
 
-angular.module("Home").config(_home.HomeConfig).controller("HomeController", _home2.HomeController);
+angular.module("Home").config(_home.HomeConfig).controller("HomeTopController", _home2.HomeTopController).controller("HomeLeftController", _home2.HomeLeftController).controller("HomeCenterController", _home2.HomeCenterController).controller("HomeRightController", _home2.HomeRightController);
 
 //(function(){
 //
@@ -5505,7 +5780,7 @@ angular.module("Home").config(_home.HomeConfig).controller("HomeController", _ho
 //
 //})();
 
-},{"./home.config":27,"./home.controller":28}],30:[function(require,module,exports){
+},{"./home.config":28,"./home.controller":29}],31:[function(require,module,exports){
 "use strict";
 
 angular.module("MainApp", ["uiRouterStyles", "templates", "Home", "Cart", "Community", "Downtown", "Help", "Search", "Setting", "Signin", "Auth", "Directives"]);
@@ -5523,7 +5798,7 @@ angular.module("Auth", []);
 
 angular.module("Directives", []);
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 "use strict";
 
 var _search = require("./search.config");
@@ -5582,7 +5857,7 @@ angular.module("Search").config(_search.SearchConfig).controller("SearchControll
 //});
 //
 
-},{"./search.config":32,"./search.controller":33}],32:[function(require,module,exports){
+},{"./search.config":33,"./search.controller":34}],33:[function(require,module,exports){
 "use strict";
 
 SearchConfig.$inject = ["$stateProvider"];
@@ -5595,19 +5870,60 @@ function SearchConfig($stateProvider) {
 
     $stateProvider.state("search", {
         url: "/search",
-        templateUrl: "modules/search/search.html",
-        controller: "SearchController",
-        controllerAs: "search",
         title: "Search",
-        data: {
-            css: "/css/search/search.css",
-            authenticate: true,
-            permissions: ["restricted"]
+
+        views: {
+
+            "top": {
+                templateUrl: "modules/search/search-top.html",
+                controller: "SearchTopController",
+                controllerAs: "search",
+
+                data: {
+                    css: "/css/search/search.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "left": {
+                templateUrl: "modules/search/search-left.html",
+                controller: "SearchLeftController",
+                controllerAs: "search",
+
+                data: {
+                    css: "/css/search/search.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "center": {
+                templateUrl: "modules/search/search-center.html",
+                controller: "SearchCenterController",
+                controllerAs: "search",
+
+                data: {
+                    css: "/css/search/search.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "right": {
+                templateUrl: "modules/search/search-right.html",
+                controller: "SearchRightController",
+                controllerAs: "search",
+
+                data: {
+                    css: "/css/search/search.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            }
         }
+
     });
 };
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5621,22 +5937,40 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @name Search.controller:SearchController
  * @description Controller for Search module.
  */
-var SearchController = exports.SearchController = function SearchController() {
+var SearchTopController = exports.SearchTopController = function SearchTopController() {
     "ngInject";
 
-    _classCallCheck(this, SearchController);
+    _classCallCheck(this, SearchTopController);
 };
 
-},{}],34:[function(require,module,exports){
+var SearchLeftController = exports.SearchLeftController = function SearchLeftController() {
+    "ngInject";
+
+    _classCallCheck(this, SearchLeftController);
+};
+
+var SearchCenterController = exports.SearchCenterController = function SearchCenterController() {
+    "ngInject";
+
+    _classCallCheck(this, SearchCenterController);
+};
+
+var SearchRightController = exports.SearchRightController = function SearchRightController() {
+    "ngInject";
+
+    _classCallCheck(this, SearchRightController);
+};
+
+},{}],35:[function(require,module,exports){
 "use strict";
 
 var _setting = require("./setting.config");
 
 var _setting2 = require("./setting.controller");
 
-angular.module("Setting").config(_setting.SettingConfig).controller("SettingController", _setting2.SettingController);
+angular.module("Setting").config(_setting.SettingConfig).controller("SettingTopController", _setting2.SettingTopController).controller("SettingLeftController", _setting2.SettingLeftController).controller("SettingCenterController", _setting2.SettingCenterController).controller("SettingRightController", _setting2.SettingRightController);
 
-},{"./setting.config":35,"./setting.controller":36}],35:[function(require,module,exports){
+},{"./setting.config":36,"./setting.controller":37}],36:[function(require,module,exports){
 "use strict";
 
 SettingConfig.$inject = ["$stateProvider"];
@@ -5649,19 +5983,61 @@ function SettingConfig($stateProvider) {
 
     $stateProvider.state("setting", {
         url: "/setting",
-        templateUrl: "modules/setting/setting.html",
-        controller: "SettingController",
-        controllerAs: "setting",
         title: "Setting",
-        data: {
-            css: "/css/setting/setting.css",
-            authenticate: true,
-            permissions: ["restricted"]
+
+        views: {
+
+            "top": {
+                templateUrl: "modules/setting/setting-top.html",
+                controller: "SettingTopController",
+                controllerAs: "setting",
+
+                data: {
+                    css: "/css/setting/setting.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "left": {
+                templateUrl: "modules/setting/setting-left.html",
+                controller: "SettingLeftController",
+                controllerAs: "setting",
+
+                data: {
+                    css: "/css/setting/setting.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "center": {
+                templateUrl: "modules/setting/setting-center.html",
+                controller: "SettingCenterController",
+                controllerAs: "setting",
+
+                data: {
+                    css: "/css/setting/setting.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            },
+            "right": {
+                templateUrl: "modules/setting/setting-right.html",
+                controller: "SettingRightController",
+                controllerAs: "setting",
+
+                data: {
+                    css: "/css/setting/setting.css",
+                    authenticate: true,
+                    permissions: ["restricted"]
+                }
+            }
+
         }
+
     });
 };
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5675,13 +6051,31 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @name Setting.controller:SettingController
  * @description Controller for Setting module.
  */
-var SettingController = exports.SettingController = function SettingController() {
+var SettingTopController = exports.SettingTopController = function SettingTopController() {
     "ngInject";
 
-    _classCallCheck(this, SettingController);
+    _classCallCheck(this, SettingTopController);
 };
 
-},{}],37:[function(require,module,exports){
+var SettingLeftController = exports.SettingLeftController = function SettingLeftController() {
+    "ngInject";
+
+    _classCallCheck(this, SettingLeftController);
+};
+
+var SettingCenterController = exports.SettingCenterController = function SettingCenterController() {
+    "ngInject";
+
+    _classCallCheck(this, SettingCenterController);
+};
+
+var SettingRightController = exports.SettingRightController = function SettingRightController() {
+    "ngInject";
+
+    _classCallCheck(this, SettingRightController);
+};
+
+},{}],38:[function(require,module,exports){
 "use strict";
 
 var _signin = require("./signin.config");
@@ -5690,7 +6084,7 @@ var _signin2 = require("./signin.controller");
 
 angular.module("Signin").config(_signin.SigninConfig).controller("SigninController", _signin2.SigninController);
 
-},{"./signin.config":38,"./signin.controller":39}],38:[function(require,module,exports){
+},{"./signin.config":39,"./signin.controller":40}],39:[function(require,module,exports){
 "use strict";
 
 SigninConfig.$inject = ["$stateProvider"];
@@ -5716,7 +6110,7 @@ function SigninConfig($stateProvider) {
     });
 };
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5773,21 +6167,22 @@ var SigninController = exports.SigninController = function () {
     return SigninController;
 }();
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 'use strict';
 
 angular.module('templates', []).run(['$templateCache', function ($templateCache) {
+  $templateCache.put('modules/(main-app)/main.html', '<div class="col-md-9">\n        <div ui-view="top" class="pagetop col-md-12">\n            \n        </div>\n        <div ui-view="left" class="pageleft col-xs-9 col-sm-2 col-md-3">\n            \n        </div>\n        <div ui-view="center" class="pagecenter col-xs-12 col-sm-8 col-md-9">\n            \n        </div>\n    </div>\n\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view="right" class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n        </div>\n    </div>\n    \n\n\n\n');
+  $templateCache.put('modules/auth/auth.html', '<div class="jumbotron text-center">\r\n    <span ng-show="auth.isAuthenticated">{{auth.welcome}}</span>\r\n    <form ng-show="!auth.isAuthenticated" ng-submit="auth.submit()">\r\n        <input ng-model="auth.user.username" type="text" name="user" placeholder="Username" />\r\n        <input ng-model="auth.user.password" type="password" name="pass" placeholder="Password" />\r\n        <input type="submit" value="Login" />\r\n    </form>\r\n    <div>{{auth.error}}</div>\r\n    <div ng-show="auth.isAuthenticated">\r\n        <a ng-click="auth.callRestricted()" href="">Shh, this is private!</a>\r\n        <br>\r\n        <div>{{auth.message}}</div>\r\n        <a ng-click="auth.logout()" href="">Logout</a>\r\n    </div>\r\n</div>\r\n\r\n\r\n\r\n\r\n<!--\r\n<div class="col-sm-5">\r\n                        \t\r\n                        \t<div class="form-box">\r\n\t                        \t<div class="form-top">\r\n\t                        \t\t<div class="form-top-left">\r\n\t                        \t\t\t<h3>Login to our site</h3>\r\n\t                            \t\t<p>Enter username and password to log on:</p>\r\n\t                        \t\t</div>\r\n\t                        \t\t<div class="form-top-right">\r\n\t                        \t\t\t<i class="fa fa-key"></i>\r\n\t                        \t\t</div>\r\n\t                            </div>\r\n\t                            <div class="form-bottom">\r\n\t\t\t\t                    <form role="form" action="" method="post" class="login-form">\r\n\t\t\t\t                    \t<div class="form-group">\r\n\t\t\t\t                    \t\t<label class="sr-only" for="form-username">Username</label>\r\n\t\t\t\t                        \t<input ng-model="auth.user.username" type="text" name="form-username" placeholder="Username..." class="form-username form-control" id="form-username">\r\n\t\t\t\t                        </div>\r\n\t\t\t\t                        <div class="form-group">\r\n\t\t\t\t                        \t<label class="sr-only" for="form-password">Password</label>\r\n\t\t\t\t                        \t<input ng-model="auth.user.password" type="password" name="form-password" placeholder="Password..." class="form-password form-control" id="form-password">\r\n\t\t\t\t                        </div>\r\n\t\t\t\t                        <button type="submit" class="btn" value="Login">Sign in!</button>\r\n\t\t\t\t                    </form>\r\n\t\t\t                    </div>\r\n\t\t                    </div>\r\n\t\t                \r\n </div>-->\r\n');
+  $templateCache.put('modules/auth/forbidden.html', '<h1>Forbidden</h1>');
+  $templateCache.put('modules/cart/cart.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view="top" class="pagetop col-md-12">\n           <h2>top</h2>\n            \n        </div>\n        <div ui-view="left"  class="pageleft col-xs-9 col-sm-2 col-md-3 cart-total check">\n            <a class="continue" href="#">Continue to basket</a>\n\t\t\t <div class="price-details">\n\t\t\t\t <h3>Price Details</h3>\n\t\t\t\t <span>Total</span>\n\t\t\t\t <span class="total1">6200.00</span>\n\t\t\t\t <span>Discount</span>\n\t\t\t\t <span class="total1">---</span>\n\t\t\t\t <span>Delivery Charges</span>\n\t\t\t\t <span class="total1">150.00</span>\n\t\t\t\t <div class="clearfix"></div>\t\t\t\t \n\t\t\t </div>\t\n\t\t\t <ul class="total_price">\n\t\t\t   <li class="last_price"> <h4>TOTAL</h4></li>\t\n\t\t\t   <li class="last_price"><span>6350.00</span></li>\n\t\t\t   <div class="clearfix"> </div>\n\t\t\t </ul>\n\t\t\t\n\t\t\t \n\t\t\t <div class="clearfix"></div>\n\t\t\t <a class="order" href="#">Place Order</a>\n\t\t\t <div class="total-item">\n\t\t\t\t <h3>OPTIONS</h3>\n\t\t\t\t <h4>COUPONS</h4>\n\t\t\t\t <a class="cpns" href="#">Apply Coupons</a>\n\t\t\t\t <p><a href="#">Log In</a> to use accounts - linked coupons</p>\n\t\t\t </div>\n        </div>\n        \n        \n        <div ui-view="center" class="pagecenter col-xs-12 col-sm-8 col-md-9 cart-items check">\n            <h1>My Shopping Bag (2)</h1>\n\t\t\t\t<script>$(document).ready(function(c) {\n\t\t\t\t\t$(\'.close1\').on(\'click\', function(c){\n\t\t\t\t\t\t$(\'.cart-header\').fadeOut(\'slow\', function(c){\n\t\t\t\t\t\t\t$(\'.cart-header\').remove();\n\t\t\t\t\t\t});\n\t\t\t\t\t\t});\t  \n\t\t\t\t\t});\n\t\t\t   </script>\n\t\t\t <div class="cart-header">\n\t\t\t\t <div class="close1"> </div>\n\t\t\t\t <div class="cart-sec simpleCart_shelfItem">\n\t\t\t\t\t\t<div class="cart-item cyc">\n\t\t\t\t\t\t\t <img src="/images/8.jpg" class="img-responsive" alt=""/>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t   <div class="cart-item-info">\n\t\t\t\t\t\t<h3><a href="#">Mountain Hopper(XS R034)</a><span>Model No: 3578</span></h3>\n\t\t\t\t\t\t<ul class="qty">\n\t\t\t\t\t\t\t<li><p>Size : 5</p></li>\n\t\t\t\t\t\t\t<li><p>Qty : 1</p></li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t <div class="delivery">\n\t\t\t\t\t\t\t <p>Service Charges : Rs.100.00</p>\n\t\t\t\t\t\t\t <span>Delivered in 2-3 bussiness days</span>\n\t\t\t\t\t\t\t <div class="clearfix"></div>\n\t\t\t\t        </div>\t\n\t\t\t\t\t   </div>\n\t\t\t\t\t   <div class="clearfix"></div>\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t  </div>\n\t\t\t </div>\n\t\t\t <script>$(document).ready(function(c) {\n\t\t\t\t\t$(\'.close2\').on(\'click\', function(c){\n\t\t\t\t\t\t\t$(\'.cart-header2\').fadeOut(\'slow\', function(c){\n\t\t\t\t\t\t$(\'.cart-header2\').remove();\n\t\t\t\t\t});\n\t\t\t\t\t});\t  \n\t\t\t\t\t});\n\t\t\t </script>\n\t\t\t <div class="cart-header2">\n\t\t\t\t <div class="close2"> </div>\n\t\t\t\t  <div class="cart-sec simpleCart_shelfItem">\n\t\t\t\t\t\t<div class="cart-item cyc">\n\t\t\t\t\t\t\t <img src="/images/11.jpg" class="img-responsive" alt=""/>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t   <div class="cart-item-info">\n\t\t\t\t\t\t<h3><a href="#">Mountain Hopper(XS R034)</a><span>Model No: 3578</span></h3>\n\t\t\t\t\t\t<ul class="qty">\n\t\t\t\t\t\t\t<li><p>Size : 5</p></li>\n\t\t\t\t\t\t\t<li><p>Qty : 1</p></li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t <div class="delivery">\n\t\t\t\t\t\t\t <p>Service Charges : Rs.100.00</p>\n\t\t\t\t\t\t\t <span>Delivered in 2-3 bussiness days</span>\n\t\t\t\t\t\t\t <div class="clearfix"></div>\n\t\t\t\t        </div>\t\n\t\t\t\t\t   </div>\n\t\t\t\t\t   <div class="clearfix"></div>\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t  </div>\n\t\t\t  </div>\n            \n        </div>\n    </div>\n\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view="right" class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n    \n    \n</div>\n\n\n\n');
   $templateCache.put('modules/community/community.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view="top" class="pagetop col-md-12 col-sm-12 col-xs-12">\n            <h2>Header</h2>\n        </div>\n        <div ui-view="left" class="pageleft col-md-3 col-sm-2 col-xs-9 ">\n            \n            <div align="center">\n                <img src="/images/img_avatar.png" class="img-circle img-responsive">\n            </div>\n            \n        </div>\n        <div ui-view="center" class="pagecenter  col-md-9 col-sm-8  col-xs-12">\n            <div class="col-md-12 col-sm-12 col-xs-12">\n                 \n                <div class="twt-wrapper">\n                    <div class="panel panel-info">\n                        \n                        <div class="panel-body">\n                            <textarea class="form-control" placeholder="What do you think?" rows="3"></textarea>\n                            <br />\n                            <a href="#" class="btn btn-primary btn-sm pull-right">Post</a>\n                            <div class="clearfix"></div>\n                            <hr />\n                            <ul class="media-list">\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ Rexona Kumi</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor sit amet, <a href="#"># consectetur adipiscing </a>.\n                                        </p>\n                                    </div>\n                                </li>\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ John Doe</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor <a href="#"># ipsum dolor </a>adipiscing elit.\n                                        </p>\n                                    </div>\n                                </li>\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ Madonae Jonisyi</strong>\n                                        <p>\n                                            Lorem ipsum dolor <a href="#"># sit amet</a> sit amet, consectetur adipiscing elit.\n                                        </p>\n                                    </div>\n                                </li>\n                            </ul>\n                            <span class="text-danger">237K users active</span>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view="right" class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n    \n    \n\n</div>\n\n\n\n\n\n<!--\n<div>\n    <div>This is Community page.</div>\n    <br>\n   \n\n\n\n    <div class="container">\n        \n\n        <div class="row">\n            <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4">\n                 TWEET WRAPPER START \n                <div class="twt-wrapper">\n                    <div class="panel panel-info">\n                        <div class="panel-heading">\n                            Time line \n                        </div>\n                        <div class="panel-body">\n                            <textarea class="form-control" placeholder="What do you think?" rows="3"></textarea>\n                            <br />\n                            <a href="#" class="btn btn-primary btn-sm pull-right">Post</a>\n                            <div class="clearfix"></div>\n                            <hr />\n                            <ul class="media-list">\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ Rexona Kumi</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor sit amet, <a href="#"># consectetur adipiscing </a>.\n                                        </p>\n                                    </div>\n                                </li>\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ John Doe</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor <a href="#"># ipsum dolor </a>adipiscing elit.\n                                        </p>\n                                    </div>\n                                </li>\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ Madonae Jonisyi</strong>\n                                        <p>\n                                            Lorem ipsum dolor <a href="#"># sit amet</a> sit amet, consectetur adipiscing elit.\n                                        </p>\n                                    </div>\n                                </li>\n                            </ul>\n                            <span class="text-danger">237K users active</span>\n                        </div>\n                    </div>\n                </div>\n               \n            </div>\n        </div>\n    </div>\n\n\n\n \n\n\n   \n\n</div>\n-->\n');
   $templateCache.put('modules/downtown/downtown.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view="top" class="pagetop col-md-12">\n            <h2>Top</h2>\n        </div>\n        <div ui-view="left" class="pageleft col-xs-9 col-sm-2 col-md-3">\n            <h2>Shop</h2>\n            <img src="/images/0.jpg" class="img-responsive">\n        </div>\n        <div ui-view="center" class="pagecenter col-xs-12 col-sm-8 col-md-9">\n            <img src="/images/mall.png" class="img-responsive">\n        </div>\n    </div>\n\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view="right" class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n    \n    \n</div>\n\n\n');
-  $templateCache.put('modules/cart/cart.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view="top" class="pagetop col-md-12">\n           <h2>top</h2>\n            \n        </div>\n        <div ui-view="left"  class="pageleft col-xs-9 col-sm-2 col-md-3 cart-total check">\n            <a class="continue" href="#">Continue to basket</a>\n\t\t\t <div class="price-details">\n\t\t\t\t <h3>Price Details</h3>\n\t\t\t\t <span>Total</span>\n\t\t\t\t <span class="total1">6200.00</span>\n\t\t\t\t <span>Discount</span>\n\t\t\t\t <span class="total1">---</span>\n\t\t\t\t <span>Delivery Charges</span>\n\t\t\t\t <span class="total1">150.00</span>\n\t\t\t\t <div class="clearfix"></div>\t\t\t\t \n\t\t\t </div>\t\n\t\t\t <ul class="total_price">\n\t\t\t   <li class="last_price"> <h4>TOTAL</h4></li>\t\n\t\t\t   <li class="last_price"><span>6350.00</span></li>\n\t\t\t   <div class="clearfix"> </div>\n\t\t\t </ul>\n\t\t\t\n\t\t\t \n\t\t\t <div class="clearfix"></div>\n\t\t\t <a class="order" href="#">Place Order</a>\n\t\t\t <div class="total-item">\n\t\t\t\t <h3>OPTIONS</h3>\n\t\t\t\t <h4>COUPONS</h4>\n\t\t\t\t <a class="cpns" href="#">Apply Coupons</a>\n\t\t\t\t <p><a href="#">Log In</a> to use accounts - linked coupons</p>\n\t\t\t </div>\n        </div>\n        \n        \n        <div ui-view="center" class="pagecenter col-xs-12 col-sm-8 col-md-9 cart-items check">\n            <h1>My Shopping Bag (2)</h1>\n\t\t\t\t<script>$(document).ready(function(c) {\n\t\t\t\t\t$(\'.close1\').on(\'click\', function(c){\n\t\t\t\t\t\t$(\'.cart-header\').fadeOut(\'slow\', function(c){\n\t\t\t\t\t\t\t$(\'.cart-header\').remove();\n\t\t\t\t\t\t});\n\t\t\t\t\t\t});\t  \n\t\t\t\t\t});\n\t\t\t   </script>\n\t\t\t <div class="cart-header">\n\t\t\t\t <div class="close1"> </div>\n\t\t\t\t <div class="cart-sec simpleCart_shelfItem">\n\t\t\t\t\t\t<div class="cart-item cyc">\n\t\t\t\t\t\t\t <img src="/images/8.jpg" class="img-responsive" alt=""/>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t   <div class="cart-item-info">\n\t\t\t\t\t\t<h3><a href="#">Mountain Hopper(XS R034)</a><span>Model No: 3578</span></h3>\n\t\t\t\t\t\t<ul class="qty">\n\t\t\t\t\t\t\t<li><p>Size : 5</p></li>\n\t\t\t\t\t\t\t<li><p>Qty : 1</p></li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t <div class="delivery">\n\t\t\t\t\t\t\t <p>Service Charges : Rs.100.00</p>\n\t\t\t\t\t\t\t <span>Delivered in 2-3 bussiness days</span>\n\t\t\t\t\t\t\t <div class="clearfix"></div>\n\t\t\t\t        </div>\t\n\t\t\t\t\t   </div>\n\t\t\t\t\t   <div class="clearfix"></div>\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t  </div>\n\t\t\t </div>\n\t\t\t <script>$(document).ready(function(c) {\n\t\t\t\t\t$(\'.close2\').on(\'click\', function(c){\n\t\t\t\t\t\t\t$(\'.cart-header2\').fadeOut(\'slow\', function(c){\n\t\t\t\t\t\t$(\'.cart-header2\').remove();\n\t\t\t\t\t});\n\t\t\t\t\t});\t  \n\t\t\t\t\t});\n\t\t\t </script>\n\t\t\t <div class="cart-header2">\n\t\t\t\t <div class="close2"> </div>\n\t\t\t\t  <div class="cart-sec simpleCart_shelfItem">\n\t\t\t\t\t\t<div class="cart-item cyc">\n\t\t\t\t\t\t\t <img src="/images/11.jpg" class="img-responsive" alt=""/>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t   <div class="cart-item-info">\n\t\t\t\t\t\t<h3><a href="#">Mountain Hopper(XS R034)</a><span>Model No: 3578</span></h3>\n\t\t\t\t\t\t<ul class="qty">\n\t\t\t\t\t\t\t<li><p>Size : 5</p></li>\n\t\t\t\t\t\t\t<li><p>Qty : 1</p></li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t <div class="delivery">\n\t\t\t\t\t\t\t <p>Service Charges : Rs.100.00</p>\n\t\t\t\t\t\t\t <span>Delivered in 2-3 bussiness days</span>\n\t\t\t\t\t\t\t <div class="clearfix"></div>\n\t\t\t\t        </div>\t\n\t\t\t\t\t   </div>\n\t\t\t\t\t   <div class="clearfix"></div>\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t  </div>\n\t\t\t  </div>\n            \n        </div>\n    </div>\n\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view="right" class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n    \n    \n</div>\n\n\n\n');
+  $templateCache.put('modules/help/help.html', '<div id="homepage " class="row  ">\n     <div class="col-md-9 col-sm-9 col-xs-12 ">\n        <div ui-view="top" class="pagetop col-md-12 col-sm-12 col-xs-12">\n           <div style="display:inline-block;width:100%;">\n               <h2>Help</h2>\n<!--\n               <p class="pull-right visible-xs">\n                <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle Chat</button>\n              </p>\n-->\n              \n           </div>\n            \n        </div>\n        <div ui-view="left" class="pageleft col-md-3 col-sm-3 col-xs-12 ">\n            <li style="margin-top:30px;">\n                <a href="#" style="text-decoration: none;"><h4>จะติดต่อเราได้อย่างไร?</h4></a>\n                <a href="#" style="text-decoration: none;"><h4>ฉันไม่สามารถเข้าสู่ระบบได้ ?</h4></a>\n                <a href="#" style="text-decoration: none;"><h4>นโยบายความเป็นส่วนตัว</h4></a>\n            </li>\n        </div>\n        <div ui-view="center" class="pagecenter col-md-9 col-sm-9 col-xs=12 ">\n           <div style="margin-top:30px;">\n               <h4>คุณสามารถเลือกติดต่อเรา ทีมงาน Sector5 ได้ดังต่อไปนี้</h4><br>\n                <span>Hot Line : โทร. 02-999-9999</span><br>\n                <span>E-mail : info@muime.com</span><br>\n                <span>ติดต่อสำนักงาน : 455 ซอย พึ่งมี23 ถ.สุขุมวิท93 แขวงบางจาก เขตพระโขนง กทม 10260</span><br>\n                <form class="form-horizontal" method="post">\n                    <fieldset>\n                        <legend class="text-center header">Contact us</legend>\n\n                        <div class="form-group">\n                            <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-user bigicon"></i></span>\n                            <div class="col-md-8">\n                                <input id="fname" name="name" type="text" placeholder="First Name" class="form-control">\n                            </div>\n                        </div>\n                        <div class="form-group">\n                            <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-user bigicon"></i></span>\n                            <div class="col-md-8">\n                                <input id="lname" name="name" type="text" placeholder="Last Name" class="form-control">\n                            </div>\n                        </div>\n\n                        <div class="form-group">\n                            <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-envelope-o bigicon"></i></span>\n                            <div class="col-md-8">\n                                <input id="email" name="email" type="text" placeholder="Email Address" class="form-control">\n                            </div>\n                        </div>\n\n                        <div class="form-group">\n                            <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-phone-square bigicon"></i></span>\n                            <div class="col-md-8">\n                                <input id="phone" name="phone" type="text" placeholder="Phone" class="form-control">\n                            </div>\n                        </div>\n\n                        <div class="form-group">\n                            <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-pencil-square-o bigicon"></i></span>\n                            <div class="col-md-8">\n                                <textarea class="form-control" id="message" name="message" placeholder="Enter your massage for us here. We will get back to you within 2 business days." rows="7"></textarea>\n                            </div>\n                        </div>\n\n                        <div class="form-group">\n                            <div class="col-md-12 text-center">\n                                <button type="submit" class="btn btn-primary btn-lg">Submit</button>\n                            </div>\n                        </div>\n                    </fieldset>\n                </form>\n           </div>\n            \n        </div>\n      \n    </div>\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view="right" class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list" >\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n</div>\n\n\n\n\n\n<!--\n<div>\n    <div>This is Help page.</div>\n    <br>\n    <h2>Contact</h2>\n\n    <div class="card" >\n      <img align="center" src="/images/img_avatar.png" alt="Avatar" style="width:100%">\n      <div class="containerg" >\n        <h4><b>John Doe</b></h4>\n        <p>Architect & Engineer</p>\n      </div>\n    </div>\n\n\n</div>\n-->\n');
+  $templateCache.put('modules/home/home.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view="top" class="pagetop col-md-12 col-sm-12 col-xs-12">\n            <div >\n                <div align="left" class="col-md-3">\n                    <h2>Rainny</h2>\n                </div>\n                \n                <div align="center" class="col-md-9">\n                   <div class="col-md-2">\n                        <a>Notification</a>\n                    </div>\n                    <div class="col-md-2">\n                        <a>Mail</a>\n                    </div>\n                    <div class="col-md-2">\n                        <a>Contacts</a>\n                    </div>\n                    <div class="col-md-2">\n                        <a>Calendar</a>\n                    </div>\n                    <div class="col-md-2">\n                        <a>Notes</a>\n                    </div>\n                    <div class="col-md-2">\n                        <a>Photos</a>\n                    </div>\n                </div>\n            </div>\n            \n           \n        </div>\n        <div ui-view="left" class="pageleft col-md-3 col-sm-2 ">\n            <div align="center">\n                <img src="/images/img_avatar.png" class="img-circle img-responsive">\n            </div>\n        </div>\n        <div ui-view="center" class="pagecenter col-xs-12 col-sm-8 col-md-9">\n            <div class="col-md-12 col-sm-12 col-xs-12">\n                 \n                <div class="twt-wrapper">\n                    <div class="panel panel-info">\n                        \n                        <div class="panel-body">\n                            <textarea class="form-control" placeholder="What do you think?" rows="3"></textarea>\n                            <br />\n                            <a href="#" class="btn btn-primary btn-sm pull-right">Post</a>\n                            <div class="clearfix"></div>\n                            <hr />\n                            <ul class="media-list">\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ Rexona Kumi</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor sit amet, <a href="#"># consectetur adipiscing </a>.\n                                        </p>\n                                    </div>\n                                </li>\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ John Doe</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor <a href="#"># ipsum dolor </a>adipiscing elit.\n                                        </p>\n                                    </div>\n                                </li>\n                               \n                            </ul>\n                        \n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class="col-md-12 col-sm-12 col-xs-12">\n                 \n                <div class="twt-wrapper">\n                    <div class="panel panel-info">\n                        \n                        <div class="panel-body">\n                            <div class="clearfix"></div>\n                            <hr />\n                            <ul class="media-list">\n                                <li class="media">\n                                    \n                                    <div class="media-body">\n                                        \n                                        <p>\n                                           Enter your message here...\n                                            To be or not to be,\n                                            that is the question...\n                                            maybe, I think,\n                                            I\'m not sure\n                                            wait, you\'re still reading this?\n                                            Type a good message already!\n                                        </p>\n                                    </div>\n                                </li>\n                                \n                               \n                            </ul>\n                        \n                        </div>\n                    </div>\n                </div>\n            </div>\n        ` </div>\n        </div>\n    \n         \n    \n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view="right" class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n         \n    \n</div>\n');
   $templateCache.put('modules/search/search.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view="top" class="pagetop col-md-12">\n            <h2>Top</h2>\n<!--\n            <div class="searchc">\n              <svg class="searchc-svg" viewBox="0 0 320 70"\n                   data-init="M160,3 L160,3 a27,27 0 0,1 0,54 L160,57 a27,27 0 0,1 0,-54 M197,67 181.21,51.21"\n                   data-mid="M160,3 L160,3 a27,27 0 0,1 0,54 L160,57 a27,27 0 0,1 0,-54 M179.5,49.5 179.5,49.5"\n                   data-active="M27,3 L293,3 a27,27 0 0,1 0,54 L27,57 a27,27 0 0,1 0,-54 M179.5,49.5 179.5,49.5">\n                <path class="searchc-svg__path" d="M160,3 L160,3 a27,27 0 0,1 0,54 L160,57 a27,27 0 0,1 0,-54 M197,67 181.21,51.21" />\n              </svg>\n              <input type="text" class="searchc-input" />\n              <div class="searchc-close"></div>\n            </div>\n-->\n\n        </div>\n        <div ui-view="left" class="pageleft col-xs-9 col-sm-2 col-md-3">\n            <h2>\n                Search\n            </h2>\n        </div>\n        <div ui-view="center" class="pagecenter col-xs-12 col-sm-8 col-md-9">\n            fghgfhgfh\n        </div>\n    </div>\n\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view="right" class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n    \n    \n</div>\n\n\n');
   $templateCache.put('modules/setting/setting.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view="top" class="pagetop col-md-12">\n            <h2>Setting</h2>\n        </div>\n        <div ui-view="left" class="pageleft col-xs-9 col-sm-2 col-md-3">\n            <li style="margin-top:30px;">\n                <a href="#" style="text-decoration: none;"><h4>เพิ่มที่อยู่จัดส่ง</h4></a>\n\n                <a href="#" style="text-decoration: none;"><h4>ตั้งค่าความเป็นส่วนตัว</h4></a>\n                <a href="#" style="text-decoration: none;"><h4>เปลี่ยนรหัสผ่าน</h4></a>\n\n            </li>\n        </div>\n        <div ui-view="center" class="pagecenter col-xs-12 col-sm-8 col-md-9">\n            <form class="form-horizontal" role="form">\n                <fieldset>\n\n                  <!-- Form Name -->\n                  <legend>Address Details</legend>\n\n                  <!-- Text input-->\n                  <div class="form-group">\n                    <label class="col-sm-2 control-label" for="textinput">Line 1</label>\n                    <div class="col-sm-10">\n                      <input type="text" placeholder="Address Line 1" class="form-control">\n                    </div>\n                  </div>\n\n                  <!-- Text input-->\n                  <div class="form-group">\n                    <label class="col-sm-2 control-label" for="textinput">Line 2</label>\n                    <div class="col-sm-10">\n                      <input type="text" placeholder="Address Line 2" class="form-control">\n                    </div>\n                  </div>\n\n                  <!-- Text input-->\n                  <div class="form-group">\n                    <label class="col-sm-2 control-label" for="textinput">City</label>\n                    <div class="col-sm-10">\n                      <input type="text" placeholder="City" class="form-control">\n                    </div>\n                  </div>\n\n                  <!-- Text input-->\n                  <div class="form-group">\n                    <label class="col-sm-2 control-label" for="textinput">State</label>\n                    <div class="col-sm-4">\n                      <input type="text" placeholder="State" class="form-control">\n                    </div>\n\n                    <label class="col-sm-2 control-label" for="textinput">Postcode</label>\n                    <div class="col-sm-4">\n                      <input type="text" placeholder="Post Code" class="form-control">\n                    </div>\n                  </div>\n\n\n\n                  <!-- Text input-->\n                  <div class="form-group">\n                    <label class="col-sm-2 control-label" for="textinput">Country</label>\n                    <div class="col-sm-10">\n                      <input type="text" placeholder="Country" class="form-control">\n                    </div>\n                  </div>\n\n                  <div class="form-group">\n                    <div class="col-sm-offset-2 col-sm-10">\n                      <div class="pull-right">\n                        <button type="submit" class="btn btn-default">Cancel</button>\n                        <button type="submit" class="btn btn-primary">Save</button>\n                      </div>\n                    </div>\n                  </div>\n\n                </fieldset>\n              </form>\n        </div>\n    </div>\n\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view="right" class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n    \n    \n</div>\n\n\n');
   $templateCache.put('modules/signin/signin.html', '<div>\n\n    <div class="top-content">\n        \t\n            <div class="inner-bg">\n                <div class="container">\n                \t\n                    <div class="row">\n                        <div class="col-sm-8 col-sm-offset-2 text">\n\n\n                        </div>\n                    </div>\n                    \n                    <div class="row">\n                        <div class="col-sm-5">\n                        \t\n                        \t<div class="form-box">\n\t                        \t<div class="form-top">\n\t                        \t\t<div class="form-top-left">\n\t                        \t\t\t<h3>Login to our site</h3>\n\t                            \t\t<p>Enter username and password to log on:</p>\n\t                        \t\t</div>\n\t                        \t\t<div class="form-top-right">\n\t                        \t\t\t<i class="fa fa-key"></i>\n\t                        \t\t</div>\n\t                            </div>\n\t                            <div class="form-bottom">\n\t\t\t\t                    <form role="form" action="" method="post" class="login-form">\n\t\t\t\t                    \t<div class="form-group">\n\t\t\t\t                    \t\t<label class="sr-only" for="form-username">Username</label>\n\t\t\t\t                        \t<input type="text" name="form-username" placeholder="Username..." class="form-username form-control" id="form-username">\n\t\t\t\t                        </div>\n\t\t\t\t                        <div class="form-group">\n\t\t\t\t                        \t<label class="sr-only" for="form-password">Password</label>\n\t\t\t\t                        \t<input type="password" name="form-password" placeholder="Password..." class="form-password form-control" id="form-password">\n\t\t\t\t                        </div>\n\t\t\t\t                        <button type="submit" class="btn">Sign in!</button>\n\t\t\t\t                    </form>\n\t\t\t                    </div>\n\t\t                    </div>\n\t\t                \n\n\t                        \n                        </div>\n                        \n                        <div class="col-sm-1 middle-border"></div>\n                        <div class="col-sm-1"></div>\n                        \t\n                        <div class="col-sm-5">\n                        \t\n                        \t<div class="form-box">\n                        \t\t<div class="form-top">\n\t                        \t\t<div class="form-top-left">\n\t                        \t\t\t<h3>Sign up now</h3>\n\t                            \t\t<p>Fill in the form below to get instant access:</p>\n\t                        \t\t</div>\n\t                        \t\t<div class="form-top-right">\n\t                        \t\t\t<i class="fa fa-pencil"></i>\n\t                        \t\t</div>\n\t                            </div>\n\t                            <div class="form-bottom">\n\t\t\t\t                    <form role="form" action="" method="post" class="registration-form">\n\t\t\t\t                    \t<div class="form-group">\n\t\t\t\t                    \t\t<label class="sr-only" for="form-first-name">First name</label>\n\t\t\t\t                        \t<input type="text" name="form-first-name" placeholder="First name..." class="form-first-name form-control" id="form-first-name">\n\t\t\t\t                        </div>\n\t\t\t\t                        <div class="form-group">\n\t\t\t\t                        \t<label class="sr-only" for="form-last-name">Last name</label>\n\t\t\t\t                        \t<input type="text" name="form-last-name" placeholder="Last name..." class="form-last-name form-control" id="form-last-name">\n\t\t\t\t                        </div>\n\t\t\t\t                        <div class="form-group">\n\t\t\t\t                        \t<label class="sr-only" for="form-email">Email</label>\n\t\t\t\t                        \t<input type="text" name="form-email" placeholder="Email..." class="form-email form-control" id="form-email">\n\t\t\t\t                        </div>\n\t\t\t\t                        <div class="form-group">\n\t\t\t\t                        \t<label class="sr-only" for="form-about-yourself">About yourself</label>\n\t\t\t\t                        \t<textarea name="form-about-yourself" placeholder="About yourself..." \n\t\t\t\t                        \t\t\t\tclass="form-about-yourself form-control" id="form-about-yourself"></textarea>\n\t\t\t\t                        </div>\n\t\t\t\t                        <button type="submit" class="btn">Sign me up!</button>\n\t\t\t\t                    </form>\n\t\t\t                    </div>\n                        \t</div>\n                        \t\n                        </div>\n                    </div>\n                    \n                </div>\n            </div>\n            \n        </div>\n\n</div>\n');
   $templateCache.put('modules/user/user.html', '<div>\n    <div>This is user page.</div>\n    <div>\n        <button ng-click="$ctrl.listUsers()" class="btn">List</button>\n    </div>\n    <div>\n        <ui ng-repeat="user in $ctrl.list_user">\n            <li class="user-listitem">{{ user.name }} {{ user.position }}</li>\n        </ui>\n    </div>\n    <div class="emotion-disappoint"></div>\n</div>\n');
-  $templateCache.put('modules/help/help.html', '<div id="homepage " class="row  ">\n     <div class="col-md-9 col-sm-9 col-xs-12 ">\n        <div ui-view="top" class="pagetop col-md-12 col-sm-12 col-xs-12">\n           <div style="display:inline-block;width:100%;">\n               <h2>Help</h2>\n<!--\n               <p class="pull-right visible-xs">\n                <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle Chat</button>\n              </p>\n-->\n              \n           </div>\n            \n        </div>\n        <div ui-view="left" class="pageleft col-md-3 col-sm-3 col-xs-12 ">\n            <li style="margin-top:30px;">\n                <a href="#" style="text-decoration: none;"><h4>จะติดต่อเราได้อย่างไร?</h4></a>\n                <a href="#" style="text-decoration: none;"><h4>ฉันไม่สามารถเข้าสู่ระบบได้ ?</h4></a>\n                <a href="#" style="text-decoration: none;"><h4>นโยบายความเป็นส่วนตัว</h4></a>\n            </li>\n        </div>\n        <div ui-view="center" class="pagecenter col-md-9 col-sm-9 col-xs=12 ">\n           <div style="margin-top:30px;">\n               <h4>คุณสามารถเลือกติดต่อเรา ทีมงาน Sector5 ได้ดังต่อไปนี้</h4><br>\n                <span>Hot Line : โทร. 02-999-9999</span><br>\n                <span>E-mail : info@muime.com</span><br>\n                <span>ติดต่อสำนักงาน : 455 ซอย พึ่งมี23 ถ.สุขุมวิท93 แขวงบางจาก เขตพระโขนง กทม 10260</span><br>\n                <form class="form-horizontal" method="post">\n                    <fieldset>\n                        <legend class="text-center header">Contact us</legend>\n\n                        <div class="form-group">\n                            <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-user bigicon"></i></span>\n                            <div class="col-md-8">\n                                <input id="fname" name="name" type="text" placeholder="First Name" class="form-control">\n                            </div>\n                        </div>\n                        <div class="form-group">\n                            <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-user bigicon"></i></span>\n                            <div class="col-md-8">\n                                <input id="lname" name="name" type="text" placeholder="Last Name" class="form-control">\n                            </div>\n                        </div>\n\n                        <div class="form-group">\n                            <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-envelope-o bigicon"></i></span>\n                            <div class="col-md-8">\n                                <input id="email" name="email" type="text" placeholder="Email Address" class="form-control">\n                            </div>\n                        </div>\n\n                        <div class="form-group">\n                            <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-phone-square bigicon"></i></span>\n                            <div class="col-md-8">\n                                <input id="phone" name="phone" type="text" placeholder="Phone" class="form-control">\n                            </div>\n                        </div>\n\n                        <div class="form-group">\n                            <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-pencil-square-o bigicon"></i></span>\n                            <div class="col-md-8">\n                                <textarea class="form-control" id="message" name="message" placeholder="Enter your massage for us here. We will get back to you within 2 business days." rows="7"></textarea>\n                            </div>\n                        </div>\n\n                        <div class="form-group">\n                            <div class="col-md-12 text-center">\n                                <button type="submit" class="btn btn-primary btn-lg">Submit</button>\n                            </div>\n                        </div>\n                    </fieldset>\n                </form>\n           </div>\n            \n        </div>\n      \n    </div>\n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view="right" class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list" >\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n</div>\n\n\n\n\n\n<!--\n<div>\n    <div>This is Help page.</div>\n    <br>\n    <h2>Contact</h2>\n\n    <div class="card" >\n      <img align="center" src="/images/img_avatar.png" alt="Avatar" style="width:100%">\n      <div class="containerg" >\n        <h4><b>John Doe</b></h4>\n        <p>Architect & Engineer</p>\n      </div>\n    </div>\n\n\n</div>\n-->\n');
-  $templateCache.put('modules/home/home.html', '<div id="homepage " class="row">\n     <div class="col-md-9">\n        <div ui-view="top" class="pagetop col-md-12 col-sm-12 col-xs-12">\n            <div >\n                <div align="left" class="col-md-3">\n                    <h2>Rainny</h2>\n                </div>\n                \n                <div align="center" class="col-md-9">\n                   <div class="col-md-2">\n                        <a>Notification</a>\n                    </div>\n                    <div class="col-md-2">\n                        <a>Mail</a>\n                    </div>\n                    <div class="col-md-2">\n                        <a>Contacts</a>\n                    </div>\n                    <div class="col-md-2">\n                        <a>Calendar</a>\n                    </div>\n                    <div class="col-md-2">\n                        <a>Notes</a>\n                    </div>\n                    <div class="col-md-2">\n                        <a>Photos</a>\n                    </div>\n                </div>\n            </div>\n            \n           \n        </div>\n        <div ui-view="left" class="pageleft col-md-3 col-sm-2 ">\n            <div align="center">\n                <img src="/images/img_avatar.png" class="img-circle img-responsive">\n            </div>\n        </div>\n        <div ui-view="center" class="pagecenter col-xs-12 col-sm-8 col-md-9">\n            <div class="col-md-12 col-sm-12 col-xs-12">\n                 \n                <div class="twt-wrapper">\n                    <div class="panel panel-info">\n                        \n                        <div class="panel-body">\n                            <textarea class="form-control" placeholder="What do you think?" rows="3"></textarea>\n                            <br />\n                            <a href="#" class="btn btn-primary btn-sm pull-right">Post</a>\n                            <div class="clearfix"></div>\n                            <hr />\n                            <ul class="media-list">\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ Rexona Kumi</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor sit amet, <a href="#"># consectetur adipiscing </a>.\n                                        </p>\n                                    </div>\n                                </li>\n                                <li class="media">\n                                    <a href="#" class="pull-left">\n                                        <img src="/images/2.png" alt="" class="img-circle">\n                                    </a>\n                                    <div class="media-body">\n                                        <span class="text-muted pull-right">\n                                            <small class="text-muted">30 min ago</small>\n                                        </span>\n                                        <strong class="text-success">@ John Doe</strong>\n                                        <p>\n                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                                            Lorem ipsum dolor <a href="#"># ipsum dolor </a>adipiscing elit.\n                                        </p>\n                                    </div>\n                                </li>\n                               \n                            </ul>\n                        \n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class="col-md-12 col-sm-12 col-xs-12">\n                 \n                <div class="twt-wrapper">\n                    <div class="panel panel-info">\n                        \n                        <div class="panel-body">\n                            <div class="clearfix"></div>\n                            <hr />\n                            <ul class="media-list">\n                                <li class="media">\n                                    \n                                    <div class="media-body">\n                                        \n                                        <p>\n                                           Enter your message here...\n                                            To be or not to be,\n                                            that is the question...\n                                            maybe, I think,\n                                            I\'m not sure\n                                            wait, you\'re still reading this?\n                                            Type a good message already!\n                                        </p>\n                                    </div>\n                                </li>\n                                \n                               \n                            </ul>\n                        \n                        </div>\n                    </div>\n                </div>\n            </div>\n        ` </div>\n        </div>\n    \n         \n    \n    <div class="col-md-3 col-sm-3 col-xs-12">\n        <div ui-view="right" class="pageright col-xs-9 col-sm-2 col-md-12">\n        \n            <div class="containert clearfix">\n                <div class="people-list" id="people-list">\n                    <div class="search">\n                        <input type="text" placeholder="search" />\n                        <i class="fa fa-search"></i>\n                    </div>\n                    <ul class="list">\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Vincent Porter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_02.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Aiden Chavez</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 7 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Mike Thomas</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_04.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Erica Hughes</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_05.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Ginger Johnston</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_06.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Tracy Carpenter</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 30 mins ago\n                                </div>\n                            </div>\n                        </li>\n\n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_07.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Christian Kelly</div>\n                                <div class="status">\n                                    <i class="fa fa-circle offline"></i> left 10 hours ago\n                                </div>\n                            </div>\n                        </li>\n\n                        \n                        <li class="clearfix">\n                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_10.jpg" alt="avatar" />\n                            <div class="about">\n                                <div class="name">Peyton Mckinney</div>\n                                <div class="status">\n                                    <i class="fa fa-circle online"></i> online\n                                </div>\n                            </div>\n                        </li>\n                    </ul>\n                </div>\n\n            \n            <!-- end chat -->\n\n        </div>\n        <!-- end container -->\n\n        <script id="message-template" type="text/x-handlebars-template">\n            <li class="clearfix">\n                <div class="message-data align-right">\n                    <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;\n                    <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>\n                </div>\n                <div class="message other-message float-right">\n                    {{messageOutput}}\n                </div>\n            </li>\n        </script>\n\n        <script id="message-response-template" type="text/x-handlebars-template">\n            <li>\n                <div class="message-data">\n                    <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>\n                    <span class="message-data-time">{{time}}, Today</span>\n                </div>\n                <div class="message my-message">\n                    {{response}}\n                </div>\n            </li>\n        </script>\n        </div>\n    </div>\n         \n    \n</div>\n');
-  $templateCache.put('modules/auth/auth.html', '<div class="jumbotron text-center">\r\n    <span ng-show="auth.isAuthenticated">{{auth.welcome}}</span>\r\n    <form ng-show="!auth.isAuthenticated" ng-submit="auth.submit()">\r\n        <input ng-model="auth.user.username" type="text" name="user" placeholder="Username" />\r\n        <input ng-model="auth.user.password" type="password" name="pass" placeholder="Password" />\r\n        <input type="submit" value="Login" />\r\n    </form>\r\n    <div>{{auth.error}}</div>\r\n    <div ng-show="auth.isAuthenticated">\r\n        <a ng-click="auth.callRestricted()" href="">Shh, this is private!</a>\r\n        <br>\r\n        <div>{{auth.message}}</div>\r\n        <a ng-click="auth.logout()" href="">Logout</a>\r\n    </div>\r\n</div>\r\n\r\n\r\n\r\n\r\n<!--\r\n<div class="col-sm-5">\r\n                        \t\r\n                        \t<div class="form-box">\r\n\t                        \t<div class="form-top">\r\n\t                        \t\t<div class="form-top-left">\r\n\t                        \t\t\t<h3>Login to our site</h3>\r\n\t                            \t\t<p>Enter username and password to log on:</p>\r\n\t                        \t\t</div>\r\n\t                        \t\t<div class="form-top-right">\r\n\t                        \t\t\t<i class="fa fa-key"></i>\r\n\t                        \t\t</div>\r\n\t                            </div>\r\n\t                            <div class="form-bottom">\r\n\t\t\t\t                    <form role="form" action="" method="post" class="login-form">\r\n\t\t\t\t                    \t<div class="form-group">\r\n\t\t\t\t                    \t\t<label class="sr-only" for="form-username">Username</label>\r\n\t\t\t\t                        \t<input ng-model="auth.user.username" type="text" name="form-username" placeholder="Username..." class="form-username form-control" id="form-username">\r\n\t\t\t\t                        </div>\r\n\t\t\t\t                        <div class="form-group">\r\n\t\t\t\t                        \t<label class="sr-only" for="form-password">Password</label>\r\n\t\t\t\t                        \t<input ng-model="auth.user.password" type="password" name="form-password" placeholder="Password..." class="form-password form-control" id="form-password">\r\n\t\t\t\t                        </div>\r\n\t\t\t\t                        <button type="submit" class="btn" value="Login">Sign in!</button>\r\n\t\t\t\t                    </form>\r\n\t\t\t                    </div>\r\n\t\t                    </div>\r\n\t\t                \r\n </div>-->\r\n');
-  $templateCache.put('modules/auth/forbidden.html', '<h1>Forbidden</h1>');
 }]);
 
 },{}]},{},[3]);
