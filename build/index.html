@@ -82,8 +82,10 @@
                         <a ui-sref="main.help">Help</a>
                     </li>
                     <li>
-                        <a ui-sref="signin" >Sign in</a>
+                        <a ui-sref="signin" ng-show="!isUserLoggedIn()">Sign in</a>
+                        <a ui-sref="signout" ng-show="isUserLoggedIn()">Sign out</a>
                     </li>
+
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -125,7 +127,7 @@
     <!--    <script src="/libs/jquery/jquery-1.11.1.min.js"></script>-->
 
     <script src="/js/scripts.js"></script>
-    <script src="/js/placeholder.js"></script>
+<!--    <script src="/js/placeholder.js"></script>-->
     <script src="/js/search.js"></script>
     <script src="/js/ie-emulation-modes-warning.js"></script>
     <script src="/js/ie10-viewport-bug-workaround.js"></script>

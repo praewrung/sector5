@@ -154,7 +154,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "User",
       "shortDescription": "Service for User module.",
-      "keywords": "api array detail getall method module promise service user users userservice"
+      "keywords": "api module service user userservice"
     }
   ],
   "apis": {
