@@ -232,7 +232,11 @@ footer a:hover, footer a:focus {
 }
 input[type="text"],
 input[type="password"],
+input[type="email"],
+input[type="date"],
+select,
 textarea,
+select.form-control,
 textarea.form-control {
   height: 50px;
   margin: 0;
@@ -258,6 +262,11 @@ textarea.form-control {
   transition: all .3s;
 }
 
+select,
+select.form-control {
+  padding-left: 15px;
+}
+
 textarea,
 textarea.form-control {
   padding-top: 10px;
@@ -267,7 +276,11 @@ textarea.form-control {
 
 input[type="text"]:focus,
 input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus,
+select:focus,
 textarea:focus,
+select.form-control:focus,
 textarea.form-control:focus {
   outline: 0;
   background: #fff;

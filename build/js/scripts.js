@@ -1,6 +1,6 @@
 
 jQuery(document).ready(function() {
- //   alert("a");
+   // alert("a");
     /*
         Login form validation
     */
@@ -13,11 +13,10 @@ jQuery(document).ready(function() {
     	$(this).find('input[type="text"], input[type="password"], textarea').each(function(){
     		if( $(this).val() == "" ) {
     			e.preventDefault();
-
+                //alert("a");
     			$(this).addClass('input-error');
     		}
     		else {
-
     			$(this).removeClass('input-error');
     		}
     	});
@@ -27,13 +26,14 @@ jQuery(document).ready(function() {
     /*
         Registration form validation
     */
-    $('.registration-form input[type="text"], .registration-form textarea').on('focus', function() {
+    $('.registration-form input[type="text"], .registration-form input[type="password"]').on('focus', function() {
     	$(this).removeClass('input-error');
     });
 
     $('.registration-form').on('submit', function(e) {
+        console.log("asad");
 
-    	$(this).find('input[type="text"], textarea').each(function(){
+    	$(this).find('input[type="text"], input[type="password"]').each(function(){
     		if( $(this).val() == "" ) {
     			e.preventDefault();
     			$(this).addClass('input-error');
@@ -45,5 +45,19 @@ jQuery(document).ready(function() {
 
     });
 
+//    var register = angular.module("myApp", []);
+//    register.directive('submit', function(e) {
+//
+//    	$(this).find('input[type="text"], input[type="password"]').each(function(){
+//    		if( $(this).val() == "" ) {
+//    			e.preventDefault();
+//    			$(this).addClass('input-error');
+//    		}
+//    		else {
+//    			$(this).removeClass('input-error');
+//    		}
+//    	});
+//
+//    });
 
 });
