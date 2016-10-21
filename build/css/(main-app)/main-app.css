@@ -1,6 +1,11 @@
-@import url(https://fonts.googleapis.com/css?family=Lato:400,700);
+@font-face {
+  font-family: "SukhumvitSet-Text";
+  src: url(/fonts/SukhumvitSet-Text/SukhumvitSet-Text.eot);
+  src: url(/fonts/SukhumvitSet-Text/SukhumvitSet-Text.eot?#iefix) format('embedded-opentype'), url(/fonts/SukhumvitSet-Text/SukhumvitSet-Text.ttf) format('truetype'), url(/fonts/SukhumvitSet-Text/SukhumvitSet-Text.woff) format('woff'), url(/fonts/SukhumvitSet-Text/SukhumvitSet-Text.svg) format('svg');
+}
 body {
   background-color: whitesmoke;
+  font-family: SukhumvitSet-Text;
 }
 
 #homepage {
@@ -10,6 +15,7 @@ body {
 
 .pagetop {
   background-color: gainsboro;
+  border-radius: 0 10px 10px 0;
 }
 
 .pageleft {
@@ -171,7 +177,6 @@ body {
   float: right;
   color: #94C2ED;
   font-size: 16px;
-  text-transform: uppercase;
   border: none;
   cursor: pointer;
   font-weight: bold;
@@ -283,4 +288,19 @@ body {
   opacity: 1;
   padding: 10px 17px;
   font-size: 27px;
+}
+
+.navbar-nav {
+  float: none;
+  margin: 0;
+  display: inline-block;
+}
+
+.navbar-nav > li {
+  padding: 0 20px;
+}
+
+.navbar-default .nav > li > a, .navbar-default .nav > li > a:focus {
+  font-weight: 700;
+  font-size: 18px;
 }

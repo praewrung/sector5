@@ -15,9 +15,11 @@
     <link href="/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
+<!--
     <link href="/libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+-->
 
     <!-- Plugin CSS -->
     <link href="/libs/magnific-popup/magnific-popup.css" rel="stylesheet">
@@ -26,10 +28,10 @@
     <link href="/css/creative.css" rel="stylesheet">
 
     <link href="/css/(main-app)/main-app.css" rel="stylesheet">
-    <link href="/css/(main-app)/offcanvas.css" rel="stylesheet">
-    <link href="/css/(main-app)/ie10-viewport-bug-workaround.css" rel="stylesheet">
-    <link href="css/megamenu.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="/css/(main-app)/style.css" rel="stylesheet">
+<!--    <link href="/css/(main-app)/offcanvas.css" rel="stylesheet">-->
+<!--    <link href="/css/(main-app)/ie10-viewport-bug-workaround.css" rel="stylesheet">-->
+<!--    <link href="css/megamenu.css" rel="stylesheet" type="text/css" media="all" />-->
+<!--    <link href="/css/(main-app)/style.css" rel="stylesheet">-->
 
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -58,8 +60,8 @@
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
+            <div align="center" class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
                     <li>
                         <a ui-sref="main.home">Home</a>
                     </li>
@@ -94,7 +96,7 @@
     </nav>
 
 
-    <div id="main" >
+    <div id="main" style="margin-top: 70px;">
     <!-- angular templating -->
 		<!-- this is where content will be injected -->
         <div ui-view></div>
@@ -136,7 +138,7 @@
     <script>$(document).ready(function(){$(".megamenu").megamenu();});</script>
     <script src="/js/menu_jquery.js"></script>
     <script src="/js/simpleCart.min.js"> </script>
-
+    <script src="/js/auth/index.js"></script>
     <script src="main.js"></script>
 
 </body>
